@@ -1,0 +1,125 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <script src="~/Scripts/jquery-3.1.1.js"></script>
+    @*<script src='~/Scripts/bundles/phunwaremaascore/js/lib/heatmap/leaflet-src.js'></script>
+    <script src='~/Scripts/bundles/phunwaremaascore/js/lib/heatmap/leaflet.draw-src.js'></script>    
+
+    <link href='~/Scripts/bundles/phunwaremaascore/css/lib/leaflet/leaflet.css' rel='stylesheet' />
+    <link href='~/Scripts/bundles/phunwaremaascore/css/lib/leaflet.draw/leaflet.draw.css' rel='stylesheet' />*@
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.0-beta.2.rc.2/leaflet.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.0-beta.2.rc.2/leaflet.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.2.3/leaflet.draw.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.2.3/leaflet.draw.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div id="map" style="width: 580px; height: 550px; border: 1px solid #ccc"></div>
+
+
+    <script type="text/javascript">
+        // create the slippy map
+        var map = L.map('map', {
+            minZoom: 4,
+            maxZoom: 5,
+            center: [400, 400],
+            zoom: 4,
+            crs: L.CRS.Simple,
+        });
+
+        // dimensions of the image
+        var w = 471,
+            h = 520,
+            url = 'http://localhost/indoor-navigation-backend/Map/first-floor.svg';
+
+        // calculate the edges of the image, in coordinate space
+        var southWest = map.unproject([0, h], map.getMaxZoom() - 1);
+        var northEast = map.unproject([w, 0], map.getMaxZoom() - 1);
+        var bounds = new L.LatLngBounds(southWest, northEast);
+
+        // add the image overlay,
+        // so that it covers the entire map
+        L.imageOverlay(url, bounds).addTo(map);
+
+        // tell leaflet that the map is exactly as big as the image
+        map.setMaxBounds(bounds);
+
+        // Initialise the FeatureGroup to store editable layers
+        var editableLayers = new L.FeatureGroup();
+        map.addLayer(editableLayers);
+
+        var options = {
+            position: 'topleft',
+            draw: {
+                polygon: {
+                    allowIntersection: false, // Restricts shapes to simple polygons
+                    drawError: {
+                        color: '#e1e100', // Color the shape will turn when intersects
+                        message: '<strong>Oh snap!<strong> you can\'t draw that!' // Message that will show when intersect
+                    },
+                    shapeOptions: {
+                        color: '#97009c'
+                    }
+                },
+                polyline: {
+                    shapeOptions: {
+                        color: '#f357a1',
+                        weight: 10
+                    }
+                },
+                // disable toolbar item by setting it to false
+                polyline: true,
+                circle: true, // Turns off this drawing tool
+                polygon: true,
+                marker: true,
+                rectangle: true,
+            },
+            edit: {
+                featureGroup: editableLayers, //REQUIRED!!
+                remove: true
+            }
+        };
+                
+        // Initialise the draw control and pass it the FeatureGroup of editable layers
+        var drawControl = new L.Control.Draw(options);
+        map.addControl(drawControl);
+        
+
+        map.on('draw:created', function (e) {
+            var type = e.layerType,
+                layer = e.layer;
+
+            if (type === 'polyline') {
+                layer.bindPopup('A polyline!');
+            } else if (type === 'polygon') {
+                layer.bindPopup('A polygon!');
+            } else if (type === 'marker')
+            { layer.bindPopup('marker!'); }
+            else if (type === 'circle')
+            { layer.bindPopup('A circle!'); }
+            else if (type === 'rectangle')
+            { layer.bindPopup('A rectangle!'); }
+
+
+            editableLayers.addLayer(layer);
+        });
+
+        function onMapClick(e) {
+            var mapWidth = map._container.offsetWidth;
+            var mapHeight = map._container.offsetHeight;
+            console.log(e.containerPoint.x * w / mapWidth);
+            console.log(e.containerPoint.y * h / mapHeight);
+            console.log(e);
+        }
+
+        //Hadnel on right click functions TODO: MOVE THIS LATER
+        map.on('contextmenu', onMapClick);
+    </script>
+</body>
+
+</html>
