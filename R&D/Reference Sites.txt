@@ -2,27 +2,39 @@
 http://leafletjs.com/
 
 Setting Up Custom Map
+
 http://jsfiddle.net/rimig/86o3h89m/
+
 https://stackoverflow.com/questions/34897704/use-svg-as-map-using-leaflet-js
+
 
 
 https://codepen.io/zachdunn/pen/VvRXdP
 
+
 http://jsfiddle.net/cxZRM/
+
 
 https://stackoverflow.com/questions/42939633/how-to-draw-a-polyline-using-the-mouse-and-leaflet-js
 
 
 Save and Draw Back
+
 https://github.com/Leaflet/Leaflet.draw/issues/253
+
 https://stackoverflow.com/questions/24018630/how-to-save-a-completed-polygon-points-leaflet-draw-to-mysql-table
 
+
 http://bl.ocks.org/crstn/5ca52b2c577724db0e51
+
 https://bl.ocks.org/danswick/d30c44b081be31aea483
 
+
 http://duspviz.mit.edu/web-map-workshop/cartodb-data-collection/
+
 https://carto.com/blog/read-and-write-to-cartodb-with-the-leaflet-draw-plugin/
 
 
 Get X,Y
+
 https://stackoverflow.com/questions/29495702/getting-pixel-coordinates-of-an-image-overlay-using-leaflet-map-library-on-click

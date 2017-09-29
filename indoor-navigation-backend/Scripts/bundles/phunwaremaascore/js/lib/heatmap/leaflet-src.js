@@ -9,16 +9,16 @@
 
     L.version = '0.7.3';
 
-// define Leaflet for Node module pattern loaders, including Browserify
+    // define Leaflet for Node module pattern loaders, including Browserify
     if (typeof module === 'object' && typeof module.exports === 'object') {
         module.exports = L;
 
-// define Leaflet as an AMD module
+        // define Leaflet as an AMD module
     } else if (typeof define === 'function' && define.amd) {
         define(L);
     }
 
-// define Leaflet as a global L variable, saving the original L to restore later if needed
+    // define Leaflet as a global L variable, saving the original L to restore later if needed
 
     L.noConflict = function () {
         window.L = oldL;
@@ -205,7 +205,7 @@
 
     }());
 
-// shortcuts for most used utility functions
+    // shortcuts for most used utility functions
     L.extend = L.Util.extend;
     L.bind = L.Util.bind;
     L.stamp = L.Util.stamp;
@@ -217,7 +217,7 @@
      * Thanks to John Resig and Dean Edwards for inspiration!
      */
 
-    L.Class = function () {};
+    L.Class = function () { };
 
     L.Class.extend = function (props) {
 
@@ -236,7 +236,7 @@
         };
 
         // instantiate class without calling constructor
-        var F = function () {};
+        var F = function () { };
         F.prototype = this.prototype;
 
         var proto = new F();
@@ -297,17 +297,17 @@
     };
 
 
-// method for adding properties to prototype
+    // method for adding properties to prototype
     L.Class.include = function (props) {
         L.extend(this.prototype, props);
     };
 
-// merge new default options to the Class
+    // merge new default options to the Class
     L.Class.mergeOptions = function (options) {
         L.extend(this.prototype.options, options);
     };
 
-// add a constructor hook
+    // add a constructor hook
     L.Class.addInitHook = function (fn) { // (Function) || (String, args...)
         var args = Array.prototype.slice.call(arguments, 1);
 
@@ -509,7 +509,7 @@
         var ie = 'ActiveXObject' in window,
             ielt9 = ie && !document.addEventListener,
 
-        // terrible browser detection to work around Safari / iOS / Android browser bugs
+            // terrible browser detection to work around Safari / iOS / Android browser bugs
             ua = navigator.userAgent.toLowerCase(),
             webkit = ua.indexOf('webkit') !== -1,
             chrome = ua.indexOf('chrome') !== -1,
@@ -885,7 +885,7 @@
                 pos;
 
             do {
-                top  += el.offsetTop  || 0;
+                top += el.offsetTop || 0;
                 left += el.offsetLeft || 0;
 
                 //add borders
@@ -897,7 +897,7 @@
                 if (el.offsetParent === docBody && pos === 'absolute') { break; }
 
                 if (pos === 'fixed') {
-                    top  += docBody.scrollTop  || docEl.scrollTop  || 0;
+                    top += docBody.scrollTop || docEl.scrollTop || 0;
                     left += docBody.scrollLeft || docEl.scrollLeft || 0;
                     break;
                 }
@@ -912,7 +912,7 @@
                     }
 
                     //calculate full y offset since we're breaking out of the loop
-                    top += r.top + (docBody.scrollTop  || docEl.scrollTop  || 0);
+                    top += r.top + (docBody.scrollTop || docEl.scrollTop || 0);
 
                     break;
                 }
@@ -926,7 +926,7 @@
             do {
                 if (el === docBody) { break; }
 
-                top  -= el.scrollTop  || 0;
+                top -= el.scrollTop || 0;
                 left -= el.scrollLeft || 0;
 
                 el = el.parentNode;
@@ -1064,7 +1064,7 @@
             el._leaflet_pos = point;
 
             if (!disable3D && L.Browser.any3d) {
-                el.style[L.DomUtil.TRANSFORM] =  L.DomUtil.getTranslateString(point);
+                el.style[L.DomUtil.TRANSFORM] = L.DomUtil.getTranslateString(point);
             } else {
                 el.style.left = point.x + 'px';
                 el.style.top = point.y + 'px';
@@ -1081,13 +1081,13 @@
     };
 
 
-// prefix style property names
+    // prefix style property names
 
     L.DomUtil.TRANSFORM = L.DomUtil.testProp(
         ['transform', 'WebkitTransform', 'OTransform', 'MozTransform', 'msTransform']);
 
-// webkitTransition comes first because some browser versions that drop vendor prefix don't do
-// the same for the transitionend event, in particular the Android 4.1 stock browser
+    // webkitTransition comes first because some browser versions that drop vendor prefix don't do
+    // the same for the transitionend event, in particular the Android 4.1 stock browser
 
     L.DomUtil.TRANSITION = L.DomUtil.testProp(
         ['webkitTransition', 'transition', 'OTransition', 'MozTransition', 'msTransition']);
@@ -1209,7 +1209,7 @@
             var lng = this.lng;
 
             a = a || -180;
-            b = b ||  180;
+            b = b || 180;
 
             lng = (lng + b) % (b - a) + (lng < a || lng === b ? b : a);
 
@@ -1390,7 +1390,7 @@
         }
     };
 
-//TODO International date line?
+    //TODO International date line?
 
     L.latLngBounds = function (a, b) { // (LatLngBounds) or (LatLng, LatLng)
         if (!a || a instanceof L.LatLngBounds) {
@@ -1573,7 +1573,7 @@
             }
 
             if (options.center && options.zoom !== undefined) {
-                this.setView(L.latLng(options.center), options.zoom, {reset: true});
+                this.setView(L.latLng(options.center), options.zoom, { reset: true });
             }
 
             this._handlers = [];
@@ -1602,7 +1602,7 @@
                 this._zoom = this._limitZoom(zoom);
                 return this;
             }
-            return this.setView(this.getCenter(), zoom, {zoom: options});
+            return this.setView(this.getCenter(), zoom, { zoom: options });
         },
 
         zoomIn: function (delta, options) {
@@ -1621,7 +1621,7 @@
                 centerOffset = containerPoint.subtract(viewHalf).multiplyBy(1 - 1 / scale),
                 newCenter = this.containerPointToLatLng(viewHalf.add(centerOffset));
 
-            return this.setView(newCenter, zoom, {zoom: options});
+            return this.setView(newCenter, zoom, { zoom: options });
         },
 
         fitBounds: function (bounds, options) {
@@ -1649,7 +1649,7 @@
         },
 
         panTo: function (center, options) { // (LatLng)
-            return this.setView(center, this._zoom, {pan: options});
+            return this.setView(center, this._zoom, { pan: options });
         },
 
         panBy: function (offset) { // (Point)
@@ -1728,7 +1728,7 @@
             delete this._layers[id];
 
             if (this._loaded) {
-                this.fire('layerremove', {layer: layer});
+                this.fire('layerremove', { layer: layer });
             }
 
             if (this._zoomBoundLayers[id]) {
@@ -1765,7 +1765,7 @@
             options = L.extend({
                 animate: false,
                 pan: true
-            }, options === true ? {animate: true} : options);
+            }, options === true ? { animate: true } : options);
 
             var oldSize = this.getSize();
             this._sizeChanged = true;
@@ -2105,7 +2105,7 @@
             var loading = !this._loaded;
             this._loaded = true;
 
-            this.fire('viewreset', {hard: !preserveMapOffset});
+            this.fire('viewreset', { hard: !preserveMapOffset });
 
             if (loading) {
                 this.fire('load');
@@ -2118,7 +2118,7 @@
                 this.fire('zoomend');
             }
 
-            this.fire('moveend', {hard: !preserveMapOffset});
+            this.fire('moveend', { hard: !preserveMapOffset });
         },
 
         _rawPanBy: function (offset) {
@@ -2177,7 +2177,7 @@
             L.DomEvent[onOff](this._container, 'click', this._onMouseClick, this);
 
             var events = ['dblclick', 'mousedown', 'mouseup', 'mouseenter',
-                    'mouseleave', 'mousemove', 'contextmenu'],
+                'mouseleave', 'mousemove', 'contextmenu'],
                 i, len;
 
             for (i = 0, len = events.length; i < len; i++) {
@@ -2192,13 +2192,13 @@
         _onResize: function () {
             L.Util.cancelAnimFrame(this._resizeRequest);
             this._resizeRequest = L.Util.requestAnimFrame(
-                function () { this.invalidateSize({debounceMoveend: true}); }, this, false, this._container);
+                function () { this.invalidateSize({ debounceMoveend: true }); }, this, false, this._container);
         },
 
         _onMouseClick: function (e) {
             if (!this._loaded || (!e._simulated &&
                 ((this.dragging && this.dragging.moved()) ||
-                    (this.boxZoom  && this.boxZoom.moved()))) ||
+                    (this.boxZoom && this.boxZoom.moved()))) ||
                 L.DomEvent._skipped(e)) { return; }
 
             this.fire('preclick');
@@ -2254,7 +2254,7 @@
 
         _layerAdd: function (layer) {
             layer.onAdd(this);
-            this.fire('layeradd', {layer: layer});
+            this.fire('layeradd', { layer: layer });
         },
 
 
@@ -2596,7 +2596,7 @@
 
         redraw: function () {
             if (this._map) {
-                this._reset({hard: true});
+                this._reset({ hard: true });
                 this._update();
             }
             return this;
@@ -2670,7 +2670,7 @@
 
         _reset: function (e) {
             for (var key in this._tiles) {
-                this.fire('tileunload', {tile: this._tiles[key]});
+                this.fire('tileunload', { tile: this._tiles[key] });
             }
 
             this._tiles = {};
@@ -2820,7 +2820,7 @@
         _removeTile: function (key) {
             var tile = this._tiles[key];
 
-            this.fire('tileunload', {tile: tile, url: tile.src});
+            this.fire('tileunload', { tile: tile, url: tile.src });
 
             if (this.options.reuseTiles) {
                 L.DomUtil.removeClass(tile, 'leaflet-tile-loaded');
@@ -2930,7 +2930,7 @@
         },
 
         // Override if data stored on a tile needs to be cleaned up before reuse
-        _resetTile: function (/*tile*/) {},
+        _resetTile: function (/*tile*/) { },
 
         _createTile: function () {
             var tile = L.DomUtil.create('img', 'leaflet-tile');
@@ -2951,12 +2951,12 @@
         },
 
         _loadTile: function (tile, tilePoint) {
-            tile._layer  = this;
-            tile.onload  = this._tileOnLoad;
+            tile._layer = this;
+            tile.onload = this._tileOnLoad;
             tile.onerror = this._tileOnError;
 
             this._adjustTilePoint(tilePoint);
-            tile.src     = this.getTileUrl(tilePoint);
+            tile.src = this.getTileUrl(tilePoint);
 
             this.fire('tileloadstart', {
                 tile: tile,
@@ -3087,7 +3087,7 @@
                     [se.y, nw.x, nw.y, se.x].join(',') :
                     [nw.x, se.y, se.x, nw.y].join(','),
 
-                url = L.Util.template(this._url, {s: this._getSubdomain(tilePoint)});
+                url = L.Util.template(this._url, { s: this._getSubdomain(tilePoint) });
 
             return url + L.Util.getParamString(this.wmsParams, url, true) + '&BBOX=' + bbox;
         },
@@ -3125,7 +3125,7 @@
 
         redraw: function () {
             if (this._map) {
-                this._reset({hard: true});
+                this._reset({ hard: true });
                 this._update();
             }
 
@@ -3291,13 +3291,13 @@
         },
 
         _reset: function () {
-            var image   = this._image,
+            var image = this._image,
                 topLeft = this._map.latLngToLayerPoint(this._bounds.getNorthWest()),
                 size = this._map.latLngToLayerPoint(this._bounds.getSouthEast())._subtract(topLeft);
 
             L.DomUtil.setPosition(image, topLeft);
 
-            image.style.width  = size.x + 'px';
+            image.style.width = size.x + 'px';
             image.style.height = size.y + 'px';
         },
 
@@ -3387,11 +3387,11 @@
 
             if (anchor) {
                 img.style.marginLeft = (-anchor.x) + 'px';
-                img.style.marginTop  = (-anchor.y) + 'px';
+                img.style.marginTop = (-anchor.y) + 'px';
             }
 
             if (size) {
-                img.style.width  = size.x + 'px';
+                img.style.width = size.x + 'px';
                 img.style.height = size.y + 'px';
             }
         },
@@ -3893,10 +3893,10 @@
 
             this.fire('open');
 
-            map.fire('popupopen', {popup: this});
+            map.fire('popupopen', { popup: this });
 
             if (this._source) {
-                this._source.fire('popupopen', {popup: this});
+                this._source.fire('popupopen', { popup: this });
             }
         },
 
@@ -3925,10 +3925,10 @@
 
             this.fire('close');
 
-            map.fire('popupclose', {popup: this});
+            map.fire('popupclose', { popup: this });
 
             if (this._source) {
-                this._source.fire('popupclose', {popup: this});
+                this._source.fire('popupclose', { popup: this });
             }
         },
 
@@ -4216,7 +4216,7 @@
                 anchor = anchor.add(options.offset);
             }
 
-            options = L.extend({offset: anchor}, options);
+            options = L.extend({ offset: anchor }, options);
 
             if (!this._popupHandlersAdded) {
                 this
@@ -4410,7 +4410,7 @@
                 layer.bindPopup(this._popupContent, this._popupOptions);
             }
 
-            return this.fire('layeradd', {layer: layer});
+            return this.fire('layeradd', { layer: layer });
         },
 
         removeLayer: function (layer) {
@@ -4429,7 +4429,7 @@
                 this.invoke('unbindPopup');
             }
 
-            return this.fire('layerremove', {layer: layer});
+            return this.fire('layerremove', { layer: layer });
         },
 
         bindPopup: function (content, options) {
@@ -4883,7 +4883,7 @@
                 latlng = latlng || this._latlng ||
                     this._latlngs[Math.floor(this._latlngs.length / 2)];
 
-                this._openPopup({latlng: latlng});
+                this._openPopup({ latlng: latlng });
             }
 
             return this;
@@ -5269,7 +5269,7 @@
         },
 
         // distance from a point to a segment between two points
-        pointToSegmentDistance:  function (/*Point*/ p, /*Point*/ p1, /*Point*/ p2) {
+        pointToSegmentDistance: function (/*Point*/ p, /*Point*/ p1, /*Point*/ p2) {
             return Math.sqrt(this._sqClosestPointOnSegment(p, p1, p2, true));
         },
 
@@ -5968,7 +5968,7 @@
             this._point = this._map.latLngToLayerPoint(this._latlng);
         },
 
-        _updateStyle : function () {
+        _updateStyle: function () {
             L.Circle.prototype._updateStyle.call(this);
             this.setRadius(this.options.radius);
         },
@@ -6267,7 +6267,7 @@
         },
 
         getFeature: function (layer, newGeometry) {
-            return layer.feature ? L.extend({}, layer.feature, {geometry: newGeometry}) : L.GeoJSON.asFeature(newGeometry);
+            return layer.feature ? L.extend({}, layer.feature, { geometry: newGeometry }) : L.GeoJSON.asFeature(newGeometry);
         },
 
         asFeature: function (geoJSON) {
@@ -6343,8 +6343,8 @@
             };
         }
 
-        L.MultiPolyline.include({toGeoJSON: multiToGeoJSON('MultiLineString')});
-        L.MultiPolygon.include({toGeoJSON: multiToGeoJSON('MultiPolygon')});
+        L.MultiPolyline.include({ toGeoJSON: multiToGeoJSON('MultiLineString') });
+        L.MultiPolygon.include({ toGeoJSON: multiToGeoJSON('MultiPolygon') });
 
         L.LayerGroup.include({
             toGeoJSON: function () {
@@ -7102,7 +7102,7 @@
                 if (doubleTap) {
                     if (L.Browser.pointer) {
                         // work around .type being readonly with MSPointer* events
-                        var newTouch = { },
+                        var newTouch = {},
                             prop;
 
                         // jshint forin:false
@@ -7621,7 +7621,7 @@
             this._moved = true;
 
             // TODO refactor: remove hardcoded 4 pixels
-            box.style.width  = (Math.max(0, Math.abs(offset.x) - 4)) + 'px';
+            box.style.width = (Math.max(0, Math.abs(offset.x) - 4)) + 'px';
             box.style.height = (Math.max(0, Math.abs(offset.y) - 4)) + 'px';
         },
 
@@ -7683,11 +7683,11 @@
     L.Map.Keyboard = L.Handler.extend({
 
         keyCodes: {
-            left:    [37],
-            right:   [39],
-            down:    [40],
-            up:      [38],
-            zoomIn:  [187, 107, 61, 171],
+            left: [37],
+            right: [39],
+            down: [40],
+            up: [38],
+            zoomIn: [187, 107, 61, 171],
             zoomOut: [189, 109, 173]
         },
 
@@ -7880,7 +7880,7 @@
             marker._latlng = latlng;
 
             marker
-                .fire('move', {latlng: latlng})
+                .fire('move', { latlng: latlng })
                 .fire('drag');
         },
 
@@ -7974,7 +7974,7 @@
     };
 
 
-// adds control-related methods to L.Map
+    // adds control-related methods to L.Map
 
     L.Map.include({
         addControl: function (control) {
@@ -8030,9 +8030,9 @@
 
             this._map = map;
 
-            this._zoomInButton  = this._createButton(
+            this._zoomInButton = this._createButton(
                 this.options.zoomInText, this.options.zoomInTitle,
-                zoomName + '-in',  container, this._zoomIn,  this);
+                zoomName + '-in', container, this._zoomIn, this);
             this._zoomOutButton = this._createButton(
                 this.options.zoomOutText, this.options.zoomOutTitle,
                 zoomName + '-out', container, this._zoomOut, this);
@@ -8665,10 +8665,10 @@
                 matches = style[L.DomUtil.TRANSFORM].match(this._transformRe);
                 if (!matches) { return; }
                 left = parseFloat(matches[1]);
-                top  = parseFloat(matches[2]);
+                top = parseFloat(matches[2]);
             } else {
                 left = parseFloat(style.left);
-                top  = parseFloat(style.top);
+                top = parseFloat(style.top);
             }
 
             return new L.Point(left, top, true);
@@ -8714,8 +8714,8 @@
             if (this._loaded && !options.reset && options !== true) {
 
                 if (options.animate !== undefined) {
-                    options.zoom = L.extend({animate: options.animate}, options.zoom);
-                    options.pan = L.extend({animate: options.animate}, options.pan);
+                    options.zoom = L.extend({ animate: options.animate }, options.zoom);
+                    options.pan = L.extend({ animate: options.animate }, options.pan);
                 }
 
                 // try animating pan or zoom
@@ -8738,7 +8738,7 @@
                 }
             }
 
-            var preserveMapOffset= false;
+            var preserveMapOffset = false;
             if (doAnimate === false) {
                 preserveMapOffset = true;
             }

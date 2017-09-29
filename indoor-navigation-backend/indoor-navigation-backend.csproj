@@ -44,10 +44,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.7\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -98,7 +106,7 @@
     <Content Include="Content\images\marker-icon-2x.png" />
     <Content Include="Content\images\marker-icon.png" />
     <Content Include="Content\images\marker-shadow.png" />
-    <Content Include="Content\leaflet.css" />
+    <Content Include="Content\images\spritesheet.png" />
     <Content Include="Content\themes\base\accordion.css" />
     <Content Include="Content\themes\base\all.css" />
     <Content Include="Content\themes\base\autocomplete.css" />
@@ -140,6 +148,16 @@
     <Content Include="Content\themes\base\tabs.css" />
     <Content Include="Content\themes\base\theme.css" />
     <Content Include="Content\themes\base\tooltip.css" />
+    <Content Include="EF\Map.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>Map.edmx</DependentUpon>
+      <LastGenOutput>Map.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="EF\Map.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>Map.edmx</DependentUpon>
+      <LastGenOutput>Map.cs</LastGenOutput>
+    </Content>
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -152,6 +170,14 @@
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="Scripts\bundles\phunwaremaascore\font\fontawesome-webfont.woff" />
     <Content Include="Scripts\bundles\phunwaremaascore\font\GothamCond-Light.woff" />
+    <Content Include="Map\GeoJson\data.geojson" />
+    <EntityDeploy Include="EF\Map.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>Map.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="EF\Map.edmx.diagram">
+      <DependentUpon>Map.edmx</DependentUpon>
+    </Content>
     <None Include="Scripts\jquery-3.1.1.intellisense.js" />
     <Content Include="Map\first-floor.svg" />
     <Content Include="Scripts\bootstrap.js" />
@@ -166,11 +192,23 @@
     <Content Include="Scripts\bundles\phunwaremaascore\img\lbs-map-bg.png" />
     <Content Include="Scripts\bundles\phunwaremaascore\img\loading.gif" />
     <Content Include="Scripts\bundles\phunwaremaascore\img\maas-nav-icons.png" />
+    <Content Include="Scripts\bundles\phunwaremaascore\img\marker-icon-2x.png" />
+    <Content Include="Scripts\bundles\phunwaremaascore\img\marker-icon.png" />
+    <Content Include="Scripts\bundles\phunwaremaascore\img\poi_cursor.png" />
     <Content Include="Scripts\bundles\phunwaremaascore\img\waypoint_hover_icon.png" />
     <Content Include="Scripts\bundles\phunwaremaascore\img\waypoint_icon.png" />
+    <Content Include="Scripts\bundles\phunwaremaascore\img\waypoint_inaccessible_add_segment_icon.png" />
+    <Content Include="Scripts\bundles\phunwaremaascore\img\waypoint_inaccessible_connected_segment_icon.png" />
+    <Content Include="Scripts\bundles\phunwaremaascore\img\waypoint_inaccessible_segment_icon.png" />
     <Content Include="Scripts\bundles\phunwaremaascore\img\waypoint_segment_icon.png" />
     <Content Include="Scripts\bundles\phunwaremaascore\js\flashbang.js" />
+    <Content Include="Scripts\bundles\phunwaremaascore\js\flashbang.min.js" />
     <Content Include="Scripts\bundles\phunwaremaascore\js\lib\heatmap\CanvasLayer.js" />
+    <Content Include="Scripts\bundles\phunwaremaascore\js\lib\heatmap\images\layers-2x.png" />
+    <Content Include="Scripts\bundles\phunwaremaascore\js\lib\heatmap\images\layers.png" />
+    <Content Include="Scripts\bundles\phunwaremaascore\js\lib\heatmap\images\marker-icon-2x.png" />
+    <Content Include="Scripts\bundles\phunwaremaascore\js\lib\heatmap\images\marker-icon.png" />
+    <Content Include="Scripts\bundles\phunwaremaascore\js\lib\heatmap\images\marker-shadow.png" />
     <Content Include="Scripts\bundles\phunwaremaascore\js\lib\heatmap\leaflet-src.js" />
     <Content Include="Scripts\bundles\phunwaremaascore\js\lib\heatmap\leaflet.draw-src.js" />
     <Content Include="Scripts\bundles\phunwaremaascore\js\lib\heatmap\leaflet_canvas_layer.js" />
@@ -206,15 +244,55 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\leaflet\CanvasLayer.js" />
+    <Content Include="Scripts\leaflet\images\marker-icon-2x.png" />
+    <Content Include="Scripts\leaflet\images\marker-shadow.png" />
     <Content Include="Scripts\leaflet\leaflet-src.js" />
+    <Content Include="Scripts\leaflet\leaflet.ajax.js" />
+    <Content Include="Scripts\leaflet\Leaflet.draw-src.js" />
+    <Content Include="Scripts\leaflet\leaflet.draw.js" />
     <Content Include="Scripts\leaflet\leaflet.js" />
     <Content Include="Scripts\mapLoader.js" />
+    <Content Include="Scripts\sw-map.js" />
+    <Content Include="Scripts\sw-map_New.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MapController.cs" />
+    <Compile Include="EF\Map.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Map.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EF\Map.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Map.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EF\Map.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Map.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="EF\Point.cs">
+      <DependentUpon>Map.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EF\Rectangle.cs">
+      <DependentUpon>Map.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EF\Segment.cs">
+      <DependentUpon>Map.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EF\Zone.cs">
+      <DependentUpon>Map.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\LocationInfo.cs" />
+    <Compile Include="Entities\PointInfo.cs" />
+    <Compile Include="Entities\RectangleInfo.cs" />
+    <Compile Include="Entities\SegmentInfo.cs" />
+    <Compile Include="Entities\ZoneInfo.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -227,6 +305,7 @@
     <Content Include="Scripts\leaflet\leaflet-src.js.map" />
     <Content Include="Scripts\leaflet\leaflet.js.map" />
     <Content Include="Views\Map\Index.cshtml" />
+    <Content Include="Views\Map\Index - test.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -237,6 +316,9 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Models\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

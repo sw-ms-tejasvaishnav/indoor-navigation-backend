@@ -56,19 +56,19 @@ function MapManager(data) {
     this.currentXHR = '';
     this.zoomLevel = 1;
     this.svgUrl = '';
-    this.svgWidth = '';
-    this.svgHeight = '';
+    this.svgWidth = 471;
+    this.svgHeight = 520;
     this.tileUrl = data.tileUrl;
     this.supportsGeographicCoordinates = data.supportsGeographicCoordinates;
-    this.mapReferencePts  = null;
-    this.isMapSet  = false;
+    this.mapReferencePts = null;
+    this.isMapSet = false;
     this.checkRouteInterval = null;
     this.hasRouteDeeplink = false;
     this.enableIcons = data.enableIcons
 }
 MapManager.confirmLeavingPrompt = 'You are currently editing the map. Are you sure you want to leave the page without saving your changes?';
 
-$(function() {
+$(function () {
 
     /* ==========================================================================
      MAP
@@ -77,7 +77,7 @@ $(function() {
     /**
      * Initialize the map with floors and points data
      */
-    MapManager.prototype.init = function(floorId, routePts) {
+    MapManager.prototype.init = function (floorId, routePts) {
 
         manager = this;
 
@@ -127,7 +127,7 @@ $(function() {
         }
 
         // find the floor
-        manager.floor = $.grep(data.floors, function(floor) {
+        manager.floor = $.grep(data.floors, function (floor) {
             return floor.id == floorId;
         });
 
@@ -135,7 +135,7 @@ $(function() {
         manager.zoomLevel = manager.floor[0].maxZoomLevel;
 
         if (data.zoneMaps) {
-            data.zoneMaps.forEach(function(map) {
+            data.zoneMaps.forEach(function (map) {
                 if (map.floorId == floorId) manager.zoneMapId = map.mapId;
             });
         }
@@ -156,7 +156,7 @@ $(function() {
         manager.getMapDimensions(manager.svgUrl);
 
         // Enable a beforeunload prompt
-        this.onBeforeUnload = function(e) {
+        this.onBeforeUnload = function (e) {
             if (manager.isEditing()) {
                 // First line is for newer Webkit/Blink, normal
                 // is for everything else
@@ -171,7 +171,7 @@ $(function() {
     /**
      * Resets the map leaflet instance
      */
-    MapManager.prototype.resetMap = function() {
+    MapManager.prototype.resetMap = function () {
 
         $("#map").remove();
         this.map = '';
@@ -190,12 +190,12 @@ $(function() {
      INIT MAP WITH X,Y COORDINATE SPACE
      ========================================================================== */
 
-    MapManager.prototype.initXYMap = function() {
+    MapManager.prototype.initXYMap = function () {
 
         try {
 
-            var centerH = manager.mapHeight/2;
-            var centerW = manager.mapWidth/2;
+            var centerH = manager.mapHeight / 2;
+            var centerW = manager.mapWidth / 2;
 
             //create the map
             manager.map = L.map('map', {
@@ -255,7 +255,7 @@ $(function() {
             $(manager.mapContainer).trigger('mapReady');
             $('#map').off('sizeReady');
 
-        } catch(e) {
+        } catch (e) {
 
             console.log(e);
 
@@ -267,7 +267,7 @@ $(function() {
      INIT MAP WITH LAT,LONG COORDINATE SPACE
      ========================================================================== */
 
-    MapManager.prototype.initLatLongMap = function() {
+    MapManager.prototype.initLatLongMap = function () {
 
         try {
 
@@ -288,7 +288,7 @@ $(function() {
 
                 // if there is a valid svg but the reference pts aren't set yet, prompt message
                 if (manager.svgUrl) {
-                    setTimeout(function(){
+                    setTimeout(function () {
                         if (confirm('The reference points for this floor are not set. Would you like to set them now?')) {
                             $('#map-position-modal').modal('show')
                         }
@@ -321,19 +321,22 @@ $(function() {
             // set up map overlay layer
             var OverlayCanvas = L.CanvasLayer.extend({
 
-                render: function() {
+                render: function () {
 
                     try {
 
                         // create the canvas and clear it
                         var canvas = this.getCanvas();
                         var context = canvas.getContext('2d');
-                        context.clearRect(0,0, manager.svgWidth, manager.svgHeight);
+                        context.clearRect(0, 0, manager.svgWidth, manager.svgHeight);
 
                         // set up our reference points
-                        var marker0 = manager.map.latLngToContainerPoint(L.latLng(mapManager.floor[0].referencePoints.topLeft.latitude, manager.floor[0].referencePoints.topLeft.longitude));
-                        var marker1 = manager.map.latLngToContainerPoint(L.latLng(mapManager.floor[0].referencePoints.topRight.latitude, manager.floor[0].referencePoints.topRight.longitude));
-                        var marker2 = manager.map.latLngToContainerPoint(L.latLng(mapManager.floor[0].referencePoints.bottomRight.latitude, manager.floor[0].referencePoints.bottomRight.longitude));
+                        //var marker0 = manager.map.latLngToContainerPoint(L.latLng(mapManager.floor[0].referencePoints.topLeft.latitude, manager.floor[0].referencePoints.topLeft.longitude));
+                        var marker0 = manager.map.latLngToContainerPoint(L.latLng(23.041472, 72.507665));
+                        //var marker1 = manager.map.latLngToContainerPoint(L.latLng(mapManager.floor[0].referencePoints.topRight.latitude, manager.floor[0].referencePoints.topRight.longitude));
+                        var marker1 = manager.map.latLngToContainerPoint(L.latLng(23.041536, 72.507518));
+                        //var marker2 = manager.map.latLngToContainerPoint(L.latLng(mapManager.floor[0].referencePoints.bottomRight.latitude, manager.floor[0].referencePoints.bottomRight.longitude));
+                        var marker2 = manager.map.latLngToContainerPoint(L.latLng(23.041728, 72.507617));
 
                         // set up our transformation
                         var m11 = (marker1.x - marker0.x) / manager.svgWidth;
@@ -346,7 +349,7 @@ $(function() {
                         context.setTransform(
                             m11, m12,
                             m21, m22,
-                            dx,  dy
+                            dx, dy
                         );
 
                         // don't add svg map if svgurl is null but still load map editor
@@ -360,7 +363,7 @@ $(function() {
 
                         }
 
-                    } catch(e) {
+                    } catch (e) {
 
                         console.log(e);
 
@@ -379,6 +382,7 @@ $(function() {
                 maxZoom: 22
             }).addTo(manager.map);
 
+
             // create a new overlay
             manager.overlayImage = new OverlayCanvas().addTo(manager.map);
 
@@ -390,13 +394,13 @@ $(function() {
             $('#map').off('sizeReady');
 
             // zoom events
-            manager.map.on('zoomstart', function(){
+            manager.map.on('zoomstart', function () {
                 $('.leaflet-custom-canvas-container').css('opacity', '0');
                 manager.overlayImage.render();
             });
 
-            manager.map.on('zoomend', function(){
-                $('.leaflet-custom-canvas-container').animate({'opacity' : '1'}, 300);
+            manager.map.on('zoomend', function () {
+                $('.leaflet-custom-canvas-container').animate({ 'opacity': '1' }, 300);
                 manager.overlayImage.render();
             });
 
@@ -406,7 +410,7 @@ $(function() {
             var isOpera = /Mozilla/.test(navigator.userAgent) && /Opera/.test(navigator.vendor);
 
             // drag events
-            manager.map.on('drag', function(){
+            manager.map.on('drag', function () {
                 manager.overlayImage.render();
 
                 // only override transform if not safari
@@ -416,7 +420,7 @@ $(function() {
             });
 
             // resize/reset events
-            manager.map.on('viewreset', function(){
+            manager.map.on('viewreset', function () {
                 manager.overlayImage.render();
             })
 
@@ -464,7 +468,7 @@ $(function() {
             $(manager.mapContainer).trigger('mapReady');
             $('#map').off('sizeReady');
 
-        } catch(e) {
+        } catch (e) {
 
             console.log(e);
 
@@ -477,10 +481,10 @@ $(function() {
      DRAW CONTROLS
      ========================================================================== */
 
-    MapManager.prototype.initDraw = function() {
+    MapManager.prototype.initDraw = function () {
 
         // remove draw control & add new
-        if(manager.drawControl != '') {
+        if (manager.drawControl != '') {
             manager.map.removeControl(manager.drawControl);
         }
 
@@ -567,7 +571,7 @@ $(function() {
         });
 
         // fires when drawing starts
-        manager.map.on('draw:drawstart', function(e) {
+        manager.map.on('draw:drawstart', function (e) {
 
             manager.toggleRoutes();
 
@@ -602,7 +606,7 @@ $(function() {
         });
 
         // fires when drawing stops
-        manager.map.on('draw:drawstop', function(e) {
+        manager.map.on('draw:drawstop', function (e) {
 
             manager.segmentPts = [];
             manager.segmentDrawPts = [];
@@ -625,7 +629,7 @@ $(function() {
         });
 
         // fires when editing is done
-        manager.map.on('draw:edited', function(e) {
+        manager.map.on('draw:edited', function (e) {
 
             // get list of points to save
             var savePointLayers = [];
@@ -664,7 +668,7 @@ $(function() {
         });
 
         // fires when something is deleted
-        manager.map.on('draw:deleted', function(e) {
+        manager.map.on('draw:deleted', function (e) {
 
             var layers = e.layers;
             layers.eachLayer(function (layer) {
@@ -692,7 +696,7 @@ $(function() {
             }
 
             // delete the segments
-            if (manager.pointsToDelete.length < 1 && manager.segmentsToDelete.length  > 0) {
+            if (manager.pointsToDelete.length < 1 && manager.segmentsToDelete.length > 0) {
                 manager.deleteSegments();
             }
 
@@ -715,7 +719,7 @@ $(function() {
         });
 
         // fires when editing starts, turns on all check boxes layers
-        manager.map.on('draw:editstart', function() {
+        manager.map.on('draw:editstart', function () {
 
             manager.isEditMode = true;
             manager.toggleZones('on');
@@ -740,7 +744,7 @@ $(function() {
         });
 
         // fires when editing stops / also when deleting stops
-        manager.map.on('draw:editstop', function() {
+        manager.map.on('draw:editstop', function () {
 
             // reset flags
             manager.isEditMode = false;
@@ -750,7 +754,7 @@ $(function() {
 
             // delete segments
             if (manager.segmentsToDelete.length > 0 && manager.isDeleteMode) {
-                manager.segmentsToDelete.forEach(function(segment) {
+                manager.segmentsToDelete.forEach(function (segment) {
                     $(segment._container).show();
                 });
             }
@@ -772,7 +776,7 @@ $(function() {
         });
 
         // fires when delete starts
-        manager.map.on('draw:deletestart', function() {
+        manager.map.on('draw:deletestart', function () {
             manager.isDeleteMode = true;
             manager.toggleRoutes();
         });
@@ -786,7 +790,7 @@ $(function() {
     /**
      * Get building point data
      */
-    MapManager.prototype.getPointData = function() {
+    MapManager.prototype.getPointData = function () {
 
         // Get the data for the point
         manager.currentXHR = $.ajax('/lbs/ajax/points-data.json', {
@@ -795,7 +799,7 @@ $(function() {
                 floorId: manager.floorId,
                 venueGuid: manager.venueGuid
             },
-            success: function(data) {
+            success: function (data) {
 
                 // set point data and init
                 manager.points = data;
@@ -803,12 +807,12 @@ $(function() {
                 manager.mapContainer.trigger('pointDataReady');
 
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
 
                 if (status != 'abort') {
 
                     // Set error msg
-                    var errorMsg = "There was a problem getting point data. Status: "+xhr.status;
+                    var errorMsg = "There was a problem getting point data. Status: " + xhr.status;
                     var flashError = new FlashBang();
                     flashError.msg = errorMsg;
                     flashError.createError();
@@ -823,22 +827,22 @@ $(function() {
     /**
      * Initialize the map points
      */
-    MapManager.prototype.initPoints = function() {
+    MapManager.prototype.initPoints = function () {
 
         manager = this;
         manager.rawPoints = manager.points;
         drawPts = [];
-        manager.points.forEach(function(poi) {
+        manager.points.forEach(function (poi) {
 
-            if(poi.floorId==manager.floorId) {
+            if (poi.floorId == manager.floorId) {
 
                 pointX = manager.getPointX(poi.x * manager.getZoom());
                 pointY = manager.getPointY(poi.y * manager.getZoom());
 
-                try{
+                try {
 
                     // Add lat/long or xy based on venue supports geocoordinates flag
-                    if (manager.supportsGeographicCoordinates == true){
+                    if (manager.supportsGeographicCoordinates == true) {
                         pointCoordinates = new L.LatLng(poi.location.latitude, poi.location.longitude);
                     } else {
                         pointCoordinates = manager.map.unproject([pointX, pointY]);
@@ -846,16 +850,16 @@ $(function() {
 
                     // Set icon type, either waypoint, inaccesible waypoint or POI
                     var wayPointIconType = (poi.isAccessible) ? manager.wayPointIcon : manager.wayPointInAccessibleSegmentIcon;
-                    iconUrl = (poi.poiType == 0) ? wayPointIconType : manager.icon_base_url+poi.poiType+'.png';
+                    iconUrl = (poi.poiType == 0) ? wayPointIconType : manager.icon_base_url + poi.poiType + '.png';
 
                     // load custom point type icon
-                    if (poi.poiType !=0 && poi.customIconImageUrl) {
+                    if (poi.poiType != 0 && poi.customIconImageUrl) {
                         iconUrl = poi.customIconImageUrl;
                     }
 
                     //set type and icon
-                    type = (poi.poiType==0) ? 'waypoint' : 'poi';
-                    icon =  manager.createPointIcon(iconUrl, type);
+                    type = (poi.poiType == 0) ? 'waypoint' : 'poi';
+                    icon = manager.createPointIcon(iconUrl, type);
 
                     // init the point click & drag events & popUp
                     point = L.marker(pointCoordinates, {
@@ -865,8 +869,8 @@ $(function() {
 
                     if (type == 'poi') {
 
-                        point.on("mouseover", function(e) {
-                            this.bindPopup(manager.createPointPopUp(poi),{ offset: new L.Point(0, -8) }).openPopup();
+                        point.on("mouseover", function (e) {
+                            this.bindPopup(manager.createPointPopUp(poi), { offset: new L.Point(0, -8) }).openPopup();
                         });
 
                     }
@@ -877,7 +881,7 @@ $(function() {
                     point.icon = iconUrl;
                     drawPts.push(point);
 
-                }catch(err) {
+                } catch (err) {
 
                     console.log(err);
 
@@ -898,7 +902,7 @@ $(function() {
     /**
      * Point click event
      */
-    MapManager.prototype.onPointClick = function() {
+    MapManager.prototype.onPointClick = function () {
         if (manager.isAddSegmentMode) {
             manager.drawSegment(this._latlng, this);
         } else if (!manager.isEditMode && !manager.isDeleteMode) {
@@ -910,40 +914,40 @@ $(function() {
     /**
      * Get the Point x position relative to coord space
      */
-    MapManager.prototype.getPointX = function(x) {
+    MapManager.prototype.getPointX = function (x) {
         return x * this.mapWidth / this.floor[0].width;
     };
 
     /**
      * Get the point y position relative to coord space
      */
-    MapManager.prototype.getPointY = function(y) {
+    MapManager.prototype.getPointY = function (y) {
         return y * this.mapHeight / this.floor[0].height;
     };
 
     /**
      * Translate local coords back to MSE coords
      */
-    MapManager.prototype.setPointX = function(x) {
+    MapManager.prototype.setPointX = function (x) {
         return x * this.floor[0].width / this.mapWidth;
     };
 
     /**
      * Translate local coords back to MSE coords
      */
-    MapManager.prototype.setPointY = function(y) {
+    MapManager.prototype.setPointY = function (y) {
         return y * this.floor[0].height / this.mapHeight;
     };
 
     /**
      * Center map on point
      */
-    MapManager.prototype.centerOnPoint = function(pointId, animate) {
+    MapManager.prototype.centerOnPoint = function (pointId, animate) {
         for (index = 0; index < this.points.length; ++index) {
             if (this.points[index].data.id == pointId) {
                 var coords = this.points[index]._latlng;
                 animate = (animate === undefined) ? true : animate;
-                this.map.setView(coords, undefined, {doAnimate: animate});
+                this.map.setView(coords, undefined, { doAnimate: animate });
                 break;
             }
         }
@@ -952,7 +956,7 @@ $(function() {
     /**
      * Get map by zoom level
      */
-    MapManager.prototype.getMapByZoomLevel = function() {
+    MapManager.prototype.getMapByZoomLevel = function () {
 
         var svgUrl;
 
@@ -978,15 +982,15 @@ $(function() {
             return null;
         }
 
-        return (svgUrl.indexOf('https') == -1) ? svgUrl.replace("http","https") : svgUrl;
+        return (svgUrl.indexOf('https') == -1) ? svgUrl.replace("http", "https") : svgUrl;
     };
 
     /**
      * Create the map Point popup
      */
-    MapManager.prototype.createPointPopUp = function(data) {
+    MapManager.prototype.createPointPopUp = function (data) {
 
-        popUp = L.popup({'maxHeight':'120'});
+        popUp = L.popup({ 'maxHeight': '120' });
         popUp.setContent('<span class="name">' + data.name + '</span>');
         return popUp;
 
@@ -995,7 +999,7 @@ $(function() {
     /**
      * Add data to point form
      */
-    MapManager.prototype.addDataToPointForm = function(layer) {
+    MapManager.prototype.addDataToPointForm = function (layer) {
 
         var point = manager.map.project(layer._latlng);
 
@@ -1024,7 +1028,7 @@ $(function() {
     /**
      * Creates and saves the points data
      */
-    MapManager.prototype.createPointForm = function(pointId, layer) {
+    MapManager.prototype.createPointForm = function (pointId, layer) {
 
         manager = this;
 
@@ -1044,20 +1048,20 @@ $(function() {
 
         if (typeof pointId == 'undefined' || pointId == null) {
             uri = 'add';
-        } else{
-            uri = pointId+'/edit';
+        } else {
+            uri = pointId + '/edit';
         }
 
         // Get the data for the point
-        manager.currentXHR = $.ajax('/lbs/ajax/point/'+ uri, {
+        manager.currentXHR = $.ajax('/lbs/ajax/point/' + uri, {
             data: {
                 venueGuid: manager.venueGuid
             },
-            success: function(data) {
+            success: function (data) {
 
                 if (typeof pointId == 'undefined' || pointId == null) {
 
-                    $('#point-list-container').fadeOut('fast', function() {
+                    $('#point-list-container').fadeOut('fast', function () {
                         $('#point-form-container').html(data).fadeIn();
                         manager.initPointSaveForm();
                         manager.addDataToPointForm(layer);
@@ -1065,7 +1069,7 @@ $(function() {
 
                 } else {
 
-                    $('#point-list-container').fadeOut('fast', function() {
+                    $('#point-list-container').fadeOut('fast', function () {
                         $('#point-form-container').html(data).fadeIn();
                         manager.initPointSaveForm();
                         $('#container_save_venueGuid').val(manager.venueGuid);
@@ -1074,12 +1078,12 @@ $(function() {
                 }
 
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
 
                 if (status != 'abort') {
 
                     // Set error msg
-                    var errorMsg = "There was a problem initializing the point data form. Status: "+xhr.status;
+                    var errorMsg = "There was a problem initializing the point data form. Status: " + xhr.status;
                     var flashError = new FlashBang();
                     flashError.msg = errorMsg;
                     flashError.createError();
@@ -1093,10 +1097,10 @@ $(function() {
     /**
      * Create the point form
      */
-    MapManager.prototype.initPointSaveForm = function() {
+    MapManager.prototype.initPointSaveForm = function () {
 
         // Add form 'submit' event listener
-        $('#point-form').on('submit', function(e) {
+        $('#point-form').on('submit', function (e) {
 
             e.preventDefault();
 
@@ -1114,9 +1118,9 @@ $(function() {
                 type: 'post',
                 data: data,
 
-                success: function(data) {
+                success: function (data) {
 
-                    if(data.ok == false){
+                    if (data.ok == false) {
 
                         var errorMsg = data.message;
                         var flashError = new FlashBang();
@@ -1132,15 +1136,15 @@ $(function() {
 
                 },
 
-                error: function(xhr) {
+                error: function (xhr) {
 
                     // Set error msg
                     if (xhr.status == 400) {
 
                         var data = jQuery.parseJSON(xhr.responseText);
                         var errorMsg = '';
-                        data.errors.forEach(function(error){
-                            for(i in error) {
+                        data.errors.forEach(function (error) {
+                            for (i in error) {
                                 errorMsg += 'Field "' + i + '" has an error: ' + error[i] + '<br/>';
                             }
                         });
@@ -1173,7 +1177,7 @@ $(function() {
     /**
      * Save waypoint
      */
-    MapManager.prototype.saveWayPoint = function(layer, isAccessible) {
+    MapManager.prototype.saveWayPoint = function (layer, isAccessible) {
 
         point = manager.map.project(layer._latlng);
 
@@ -1203,7 +1207,7 @@ $(function() {
             type: 'POST',
             data: data,
             venueGuid: manager.venueGuid,
-            success: function(data) {
+            success: function (data) {
 
                 // Reset points using data returned
                 manager.removeAllPoints();
@@ -1215,10 +1219,10 @@ $(function() {
                 manager.refreshSegments();
 
             },
-            error: function(xhr) {
+            error: function (xhr) {
 
                 // Set error msg
-                var errorMsg = "There was a problem saving waypoint data. Status: "+xhr.status;
+                var errorMsg = "There was a problem saving waypoint data. Status: " + xhr.status;
                 var flashError = new FlashBang();
                 flashError.msg = errorMsg;
                 flashError.createError();
@@ -1231,10 +1235,10 @@ $(function() {
     /**
      * Save multiple points
      */
-    MapManager.prototype.savePoints = function(points) {
+    MapManager.prototype.savePoints = function (points) {
 
         pointsData = [];
-        points.forEach(function(point) {
+        points.forEach(function (point) {
             coords = manager.map.project(point._latlng);
             pointObj = {};
             pointObj.id = point.data.id;
@@ -1265,7 +1269,7 @@ $(function() {
                 floorId: manager.floorId,
                 venueGuid: manager.venueGuid
             },
-            success: function(data) {
+            success: function (data) {
 
                 // Reset points using data returned
                 manager.removeAllPoints();
@@ -1277,7 +1281,7 @@ $(function() {
 
             },
 
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
 
                 // Set error msg
                 var errorMsg = "There was a problem saving point data. Status: " + xhr.status;
@@ -1294,10 +1298,10 @@ $(function() {
      * Delete multiple points
      * Will either take an array of points or a single pointId
      */
-    MapManager.prototype.deletePoints = function() {
+    MapManager.prototype.deletePoints = function () {
 
         pointsData = [];
-        manager.pointsToDelete.forEach(function(point) {
+        manager.pointsToDelete.forEach(function (point) {
             pointObj = {};
             if (typeof point == 'object') {
                 pointObj.id = point.data.id;
@@ -1315,7 +1319,7 @@ $(function() {
                 floorId: manager.floorId,
                 venueGuid: manager.venueGuid
             },
-            success: function(data) {
+            success: function (data) {
 
                 // Reset points using data returned
                 manager.pointsToDelete = [];
@@ -1338,7 +1342,7 @@ $(function() {
                 manager.mapContainer.trigger('pointsDeleted');
 
             },
-            error: function(xhr) {
+            error: function (xhr) {
 
                 // Set error msg
                 var errorMsg = "There was a problem deleting point data. Status: " + xhr.status;
@@ -1357,20 +1361,20 @@ $(function() {
     /**
      * Reset the points form
      */
-    MapManager.prototype.resetPointForm = function() {
+    MapManager.prototype.resetPointForm = function () {
         $('#point-form-container').html('');
     };
 
     /**
      * Create the points list
      */
-    MapManager.prototype.createPointList = function() {
+    MapManager.prototype.createPointList = function () {
 
         manager = this;
         pointData = {};
 
         tmpPoints = [];
-        manager.points.forEach(function(point) {
+        manager.points.forEach(function (point) {
             if (point.data.poiType != 0) {
                 tmpPoints.push(point);
             }
@@ -1389,12 +1393,12 @@ $(function() {
     /**
      * Remove All Points
      */
-    MapManager.prototype.removeAllPoints = function(isRefresh) {
+    MapManager.prototype.removeAllPoints = function (isRefresh) {
 
         isRefresh = (typeof isRefresh == 'undefined') ? false : isRefresh;
 
         //delete point from the map
-        manager.points.forEach(function(point) {
+        manager.points.forEach(function (point) {
             manager.map.removeLayer(point);
         });
 
@@ -1405,12 +1409,12 @@ $(function() {
     /**
      * Toggle for Add Point Mode
      */
-    MapManager.prototype.toggleAddPoints = function() {
+    MapManager.prototype.toggleAddPoints = function () {
 
         manager = this;
         manager.isAddPointMode = !manager.isAddPointMode;
 
-        if(!manager.isAddPointMode) {
+        if (!manager.isAddPointMode) {
             manager.resetPointForm();
         }
 
@@ -1419,9 +1423,9 @@ $(function() {
     /**
      * Remove last Point from the list, for cancel
      */
-    MapManager.prototype.removeLastPoint = function() {
+    MapManager.prototype.removeLastPoint = function () {
 
-        if(manager.isPointAdded) {
+        if (manager.isPointAdded) {
             lastPoint = manager.points.length - 1;
             manager.map.removeLayer(manager.points[lastPoint]);
             manager.isAddPointMode = false;
@@ -1433,12 +1437,12 @@ $(function() {
     /**
      * Create points icons
      */
-    MapManager.prototype.createPointIcon = function(iconUrl, type) {
+    MapManager.prototype.createPointIcon = function (iconUrl, type) {
 
         type = (typeof type == 'undefined') ? 'poi' : type;
         size = (type == 'poi') ? [36, 36] : [16, 16];
         anchor = (type == 'poi') ? [18, 18] : [8, 8];
-        iconUrl = (iconUrl.indexOf('https') == -1) ? iconUrl.replace("http","https") : iconUrl;
+        iconUrl = (iconUrl.indexOf('https') == -1) ? iconUrl.replace("http", "https") : iconUrl;
 
         mapIcon = L.icon({
             iconUrl: iconUrl,
@@ -1454,26 +1458,26 @@ $(function() {
     /**
      * Toggle Show/Hide for points
      */
-    MapManager.prototype.togglePoints = function(action) {
+    MapManager.prototype.togglePoints = function (action) {
 
         action = typeof action !== 'undefined' ? action : 'toggle';
         switch (action) {
             case 'toggle':
-                manager.points.forEach(function(point) {
+                manager.points.forEach(function (point) {
                     $(point._icon).toggle();
                 });
                 break;
 
             case 'on':
             case 1:
-                manager.points.forEach(function(point) {
+                manager.points.forEach(function (point) {
                     $(point._icon).show();
                 });
                 break;
 
             case 'off':
             case 0:
-                manager.points.forEach(function(point) {
+                manager.points.forEach(function (point) {
                     $(point._icon).hide();
                 });
                 break;
@@ -1481,11 +1485,11 @@ $(function() {
 
     };
 
-    MapManager.prototype.addBlankPtBannerImg = function(msg) {
+    MapManager.prototype.addBlankPtBannerImg = function (msg) {
 
         $('#pt-banner-img').remove();
         Mustache.tags = ['{|', '|}'];
-        var item = "<div class=\"alert alert-error\">"+msg+"</div>";
+        var item = "<div class=\"alert alert-error\">" + msg + "</div>";
         $('.pt-banner-container').append(item);
 
     };
@@ -1497,7 +1501,7 @@ $(function() {
     /**
      * Get building point data
      */
-    MapManager.prototype.getSegmentData = function() {
+    MapManager.prototype.getSegmentData = function () {
 
         manager.segments = [];
 
@@ -1508,7 +1512,7 @@ $(function() {
                 floorId: manager.floorId,
                 venueGuid: manager.venueGuid
             },
-            success: function(data) {
+            success: function (data) {
 
                 // set segment data and init
                 manager.segments = data;
@@ -1518,12 +1522,12 @@ $(function() {
 
             },
 
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
 
                 if (status != 'abort') {
 
                     // Set error msg
-                    var errorMsg = "There was a problem with getting segment data. Status: "+xhr.status;
+                    var errorMsg = "There was a problem with getting segment data. Status: " + xhr.status;
                     var flashError = new FlashBang();
                     flashError.msg = errorMsg;
                     flashError.createError();
@@ -1538,20 +1542,20 @@ $(function() {
     /**
      * Draw All Segments
      */
-    MapManager.prototype.initSegments = function() {
+    MapManager.prototype.initSegments = function () {
 
         drawPts = [];
         drawSegmentPts = [];
         drawSegments = [];
         manager.rawSegments = manager.segments;
-        manager.segments.forEach(function(segment) {
+        manager.segments.forEach(function (segment) {
 
-            try{
+            try {
 
                 var isAccessible = 0;
 
                 // get start pt
-                manager.points.forEach(function(point) {
+                manager.points.forEach(function (point) {
                     if (point.data.id == segment.startPointId) {
                         if (point.data.isAccessible == true) isAccessible++;
                         drawPts.push(point._latlng);
@@ -1560,7 +1564,7 @@ $(function() {
                 });
 
                 // get end pt
-                manager.points.forEach(function(point) {
+                manager.points.forEach(function (point) {
                     if (point.data.id == segment.endPointId) {
                         if (point.data.isAccessible == true) isAccessible++;
                         drawPts.push(point._latlng);
@@ -1569,7 +1573,7 @@ $(function() {
                 });
 
                 // draw segment
-                if (drawPts.length==2) {
+                if (drawPts.length == 2) {
                     if (isAccessible != 2) {
                         polyline = L.polyline(drawPts, manager.getAccessibleLineOptions()).addTo(manager.map).bringToBack();
                     } else {
@@ -1588,7 +1592,7 @@ $(function() {
                     drawSegmentPts = [];
                 }
 
-            } catch(e) {
+            } catch (e) {
 
             }
 
@@ -1601,7 +1605,7 @@ $(function() {
     /**
      * Click handler for segments, used for removing
      */
-    MapManager.prototype.onSegmentClick = function(e) {
+    MapManager.prototype.onSegmentClick = function (e) {
 
         if (manager.isDeleteMode) {
             manager.segmentsToDelete.push(e.target);
@@ -1613,13 +1617,13 @@ $(function() {
     /**
      * Draw Single Segment
      */
-    MapManager.prototype.drawSegment = function(latLng, point) {
+    MapManager.prototype.drawSegment = function (latLng, point) {
         manager.segmentDrawPts.push(latLng);
         manager.segmentPts.push(point);
-        if(manager.segmentDrawPts.length==1) {
+        if (manager.segmentDrawPts.length == 1) {
             $('.leaflet-draw-tooltip-single').html('Step 2: Click on another waypoint or POI to finish drawing a segment.');
         }
-        if(manager.segmentDrawPts.length == 2 && latLng != manager.segmentDrawPts[0]) {
+        if (manager.segmentDrawPts.length == 2 && latLng != manager.segmentDrawPts[0]) {
             $('.leaflet-draw-tooltip-single').html('Step 1: Click on a waypoint or POI to start drawing a segment.');
             polyline = L.polyline(manager.segmentDrawPts, manager.getLineOptions(true)).addTo(manager.drawLayer).bringToBack();
             manager.segments.push(polyline);
@@ -1633,8 +1637,8 @@ $(function() {
     /**
      * Change icon image for points in a segment
      */
-    MapManager.prototype.changeSegmentPointsIcons = function(points) {
-        points.forEach(function(point) {
+    MapManager.prototype.changeSegmentPointsIcons = function (points) {
+        points.forEach(function (point) {
             var iconType = (point.data.isAccessible == true) ? manager.wayPointSegmentIcon : manager.wayPointInAccessibleConnectedSegmentIcon;
             var icon = manager.createPointIcon(iconType, 'waypoint');
             if (point.type == "waypoint") point.setIcon(icon);
@@ -1644,7 +1648,7 @@ $(function() {
     /**
      * Save Segment
      */
-    MapManager.prototype.saveSegment = function(points, polyLine) {
+    MapManager.prototype.saveSegment = function (points, polyLine) {
 
         manager = this;
 
@@ -1655,28 +1659,28 @@ $(function() {
 
         // Get the data for the reach report
         manager.currentXHR = $.ajax('/lbs/ajax/segment/add', {
-            data :{
-                startPointId : points[0].data.id,
-                endPointId   : points[1].data.id,
-                floorId      : manager.floor[0].id,
-                venueGuid    : manager.venueGuid
+            data: {
+                startPointId: points[0].data.id,
+                endPointId: points[1].data.id,
+                floorId: manager.floor[0].id,
+                venueGuid: manager.venueGuid
             },
-            success: function(data) {
+            success: function (data) {
 
                 $(polyLine).on('click', manager.onSegmentClick);
-                polyLine.segmentId = data[data.length-1].id;
+                polyLine.segmentId = data[data.length - 1].id;
 
                 manager.removeAllSegments();
                 manager.segments = data;
                 manager.initSegments();
 
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
 
                 if (status != 'abort') {
 
                     // Set error msg
-                    var errorMsg = "There was a problem saving segment data. Status: "+xhr.status;
+                    var errorMsg = "There was a problem saving segment data. Status: " + xhr.status;
                     var flashError = new FlashBang();
                     flashError.msg = errorMsg;
                     flashError.createError();
@@ -1691,12 +1695,12 @@ $(function() {
     /**
      * Delete segments
      */
-    MapManager.prototype.deleteSegments = function() {
+    MapManager.prototype.deleteSegments = function () {
 
         // check segments to see if it's there to delete
         segmentsData = [];
-        manager.segmentsToDelete.forEach(function(deleteSegment) {
-            manager.segments.forEach(function(segment) {
+        manager.segmentsToDelete.forEach(function (deleteSegment) {
+            manager.segments.forEach(function (segment) {
                 if (segment.segmentId == deleteSegment.segmentId) {
                     segmentObj = {};
                     segmentObj.id = deleteSegment.segmentId;
@@ -1716,7 +1720,7 @@ $(function() {
                     floorId: manager.floorId,
                     venueGuid: manager.venueGuid
                 },
-                success: function(data) {
+                success: function (data) {
 
                     //reset points
                     manager.removeAllPoints();
@@ -1731,10 +1735,10 @@ $(function() {
                     manager.mapContainer.off('pointsDeleted');
 
                 },
-                error: function(xhr) {
+                error: function (xhr) {
 
                     // Set error msg
-                    var errorMsg = "There was a problem deleting segments. Status: "+xhr.status;
+                    var errorMsg = "There was a problem deleting segments. Status: " + xhr.status;
                     var flashError = new FlashBang();
                     flashError.msg = errorMsg;
                     flashError.createError();
@@ -1752,12 +1756,12 @@ $(function() {
     /**
      * Remove All Segments
      */
-    MapManager.prototype.removeAllSegments = function(isRefresh) {
+    MapManager.prototype.removeAllSegments = function (isRefresh) {
 
         isRefresh = (typeof isRefresh == 'undefined') ? false : isRefresh;
 
         //delete segment from the map
-        manager.segments.forEach(function(segment) {
+        manager.segments.forEach(function (segment) {
             manager.map.removeLayer(segment);
         });
         if (!isRefresh) manager.segments = [];
@@ -1767,19 +1771,19 @@ $(function() {
     /**
      * Toggle Show/Hide for segments
      */
-    MapManager.prototype.toggleSegments = function(action) {
+    MapManager.prototype.toggleSegments = function (action) {
 
-        action = typeof action !== 'undefined' ? action: 'toggle';
+        action = typeof action !== 'undefined' ? action : 'toggle';
 
         switch (action) {
             case 'toggle':
-                manager.points.forEach(function(point) {
-                    if(point.type=='waypoint') {
+                manager.points.forEach(function (point) {
+                    if (point.type == 'waypoint') {
                         $(point._icon).toggle();
                     }
                 });
 
-                manager.segments.forEach(function(segment) {
+                manager.segments.forEach(function (segment) {
                     $(segment._container).toggle();
                 });
 
@@ -1790,13 +1794,13 @@ $(function() {
                 break;
             case 'on':
             case 1:
-                manager.points.forEach(function(point) {
-                    if(point.type=='waypoint') {
+                manager.points.forEach(function (point) {
+                    if (point.type == 'waypoint') {
                         $(point._icon).show();
                     }
                 });
 
-                manager.segments.forEach(function(segment) {
+                manager.segments.forEach(function (segment) {
                     $(segment._container).show();
                 });
                 $('#layer-bar form li input#toggle-segments').prop('checked', true);
@@ -1804,13 +1808,13 @@ $(function() {
                 break;
             case 'off':
             case 0:
-                manager.points.forEach(function(point) {
-                    if(point.type=='waypoint') {
+                manager.points.forEach(function (point) {
+                    if (point.type == 'waypoint') {
                         $(point._icon).hide();
                     }
                 });
 
-                manager.segments.forEach(function(segment) {
+                manager.segments.forEach(function (segment) {
                     $(segment._container).hide();
                 });
                 break;
@@ -1820,7 +1824,7 @@ $(function() {
     /**
      * Refresh segments
      */
-    MapManager.prototype.refreshSegments = function() {
+    MapManager.prototype.refreshSegments = function () {
 
         if (manager.segments.length > 0) {
             manager.removeAllSegments();
@@ -1833,7 +1837,7 @@ $(function() {
     /**
      * Get drawing options for lines
      */
-    MapManager.prototype.getLineOptions = function(isDrawMode) {
+    MapManager.prototype.getLineOptions = function (isDrawMode) {
 
         isDrawMode = (typeof isDrawMode == "undefined") ? false : isDrawMode;
 
@@ -1850,7 +1854,7 @@ $(function() {
     /**
      * Get drawing options for dashed inaccessible route lines
      */
-    MapManager.prototype.getAccessibleLineOptions = function() {
+    MapManager.prototype.getAccessibleLineOptions = function () {
 
         isDrawMode = (typeof isDrawMode == "undefined") ? false : isDrawMode;
 
@@ -1870,7 +1874,7 @@ $(function() {
     /**
      * Get route  data
      */
-    MapManager.prototype.getRouteData = function(evt, currentPage, limit) {
+    MapManager.prototype.getRouteData = function (evt, currentPage, limit) {
 
         // Get the data for the routes
         manager.currentXHR = $.ajax('/lbs/ajax/routes-data.json', {
@@ -1882,7 +1886,7 @@ $(function() {
                 limit: limit
             },
 
-            success: function(data) {
+            success: function (data) {
 
                 // clear interval
                 if (manager.checkRouteInterval != null) {
@@ -1892,7 +1896,7 @@ $(function() {
 
                 // enable route UI
                 $('#reset-routes').prop("disabled", false);
-                $('#routes-progress-container').fadeOut(function(){
+                $('#routes-progress-container').fadeOut(function () {
                     $('#route-look-form-container, #routes-list-container').fadeIn();
                 });
 
@@ -1906,11 +1910,11 @@ $(function() {
 
             },
 
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
 
                 var errorMsg;
 
-                try{
+                try {
                     var response = JSON.parse(xhr.responseText);
 
                     if (xhr.status == 423) {
@@ -1919,12 +1923,12 @@ $(function() {
                         errorMsg = response.message;
 
                         if (manager.checkRouteInterval == null) {
-                            manager.checkRouteInterval = setInterval(function(){ manager.checkForRouteGeneration() }, 10000);
+                            manager.checkRouteInterval = setInterval(function () { manager.checkForRouteGeneration() }, 10000);
                         }
 
                         // Disable routes UI if locked
                         $('#reset-routes').prop("disabled", true);
-                        $('#route-look-form-container, #routes-list-container').fadeOut(function(){
+                        $('#route-look-form-container, #routes-list-container').fadeOut(function () {
                             $('#routes-progress-container').fadeIn();
                         });
 
@@ -1937,7 +1941,7 @@ $(function() {
                         flashError.createError();
 
                     }
-                } catch (unknownException){
+                } catch (unknownException) {
 
                     errorMsg = "There was a problem getting route data, please try again later. Status: Unknown server error";
                     var flashError = new FlashBang();
@@ -1950,36 +1954,36 @@ $(function() {
 
     };
 
-    MapManager.prototype.checkForRouteGeneration = function() {
+    MapManager.prototype.checkForRouteGeneration = function () {
         manager.getRouteData(null, 1, 1);
     };
 
     /**
      * Initialize the routes
      */
-    MapManager.prototype.initRoutes = function() {
+    MapManager.prototype.initRoutes = function () {
 
         // get points for all the building
         manager.getBuildingPoints();
 
         // when pt data is ready, init routes UI
-        $(manager.map).on('bldgPtsDataReady', function() {
+        $(manager.map).on('bldgPtsDataReady', function () {
 
             // remove any existing options
             $('#route-start-point-select, #route-end-point-select').empty();
 
             // populate select fields with data.
-            $.each(manager.buildingPts, function(index) {
+            $.each(manager.buildingPts, function (index) {
                 if (manager.buildingPts[index].poiType != 0 && manager.buildingPts[index].name) {
                     $('#route-start-point-select, #route-end-point-select')
                         .append($("<option></option>")
-                            .attr("value", manager.buildingPts[index].id + "-" +  String(index))
+                            .attr("value", manager.buildingPts[index].id + "-" + String(index))
                             .text(mapManager.buildingPts[index].name));
                 }
             });
 
             // get the floor names from select menu
-            $("#level-select option").each(function() {
+            $("#level-select option").each(function () {
                 manager.floorNames[$(this).val()] = $(this).text();
             });
 
@@ -1988,7 +1992,7 @@ $(function() {
                 var itemValues = item.id.split("-");
                 var index = itemValues[1];
                 var name = (item.text.length > 28) ? item.text.substr(0, 27) + '&hellip;' : item.text;
-                var iconUrl = (mapManager.buildingPts[index].customImageUrl) ? mapManager.buildingPts[index].customImageUrl : manager.icon_base_url + mapManager.buildingPts[index].poiType +'.png';
+                var iconUrl = (mapManager.buildingPts[index].customImageUrl) ? mapManager.buildingPts[index].customImageUrl : manager.icon_base_url + mapManager.buildingPts[index].poiType + '.png';
                 return "<img class='select2-option-image' src='" + iconUrl + "' style='height: 35px; float:left' /> <div class='float: left'><span class='select2-option-text'>" + name + "</span><span class='select2-option-subtext'>" + manager.floorNames[mapManager.buildingPts[index].floorId] + "</span></div>";
             }
 
@@ -1997,28 +2001,28 @@ $(function() {
                 placeholder: " Type to Search for Starting POI",
                 formatResult: formatSelect,
                 formatSelection: formatSelect,
-                escapeMarkup: function(m) { return m; }
+                escapeMarkup: function (m) { return m; }
             });
 
             // end point select
             $("#route-end-point-select").select2({
                 formatResult: formatSelect,
                 formatSelection: formatSelect,
-                escapeMarkup: function(m) { return m; }
+                escapeMarkup: function (m) { return m; }
             });
 
-            $(".clear-route").on('click', function(event){
+            $(".clear-route").on('click', function (event) {
                 event.stopPropagation();
                 manager.resetRouteUI();
             });
 
             // on select hide initial search field
-            $("#route-start-point-select, #route-end-point-select").on('select2-selecting', function() {
+            $("#route-start-point-select, #route-end-point-select").on('select2-selecting', function () {
                 $(this).prev().find('.select2-search-field').css('display', 'none');
             });
 
             // init select fields
-            $("#route-start-point-select, #route-end-point-select").on('select2-close', function() {
+            $("#route-start-point-select, #route-end-point-select").on('select2-close', function () {
 
                 // blur field on select
                 setTimeout(function () {
@@ -2033,10 +2037,10 @@ $(function() {
             });
 
             // init select fields
-            $("#route-start-point-select, #route-end-point-select").on('select2-removed', function() {
+            $("#route-start-point-select, #route-end-point-select").on('select2-removed', function () {
 
                 // blur field on select and show initial search field
-                setTimeout(function() {
+                setTimeout(function () {
                     manager.resetRouteUI(this);
                     $('.select2-search-field').css('display', 'block');
                 }, 10);
@@ -2045,7 +2049,7 @@ $(function() {
 
             // show routes ui container
             $('#routes-info-container').fadeIn();
-            $('#route-isAccessible').on('change', function(){
+            $('#route-isAccessible').on('change', function () {
                 manager.getSingleRouteData();
             });
 
@@ -2058,21 +2062,21 @@ $(function() {
     /**
      * Deeplink to route
      */
-    MapManager.prototype.deepLinktoRoute = function() {
+    MapManager.prototype.deepLinktoRoute = function () {
 
         $('#routes-info-container').fadeIn();
 
         if (manager.multiFloorRoutePts != null) {
 
             // find the index of pts and create values for dropdowns
-            $("#route-start-point-select").children().each( function(index, option) {
+            $("#route-start-point-select").children().each(function (index, option) {
                 if ($(option).val().indexOf(manager.multiFloorRoutePts[0]) != -1) {
                     $("#route-start-point-select").select2('val', $(option).val());
                 }
             });
 
             // find the index of pts and create values for dropdowns
-            $("#route-end-point-select").children().each( function(index, option) {
+            $("#route-end-point-select").children().each(function (index, option) {
                 if ($(option).val().indexOf(manager.multiFloorRoutePts[1]) != -1) {
                     $("#route-end-point-select").select2('val', $(option).val());
                 }
@@ -2087,7 +2091,7 @@ $(function() {
     /**
      * Get data for a single route
      */
-    MapManager.prototype.getBuildingPoints = function() {
+    MapManager.prototype.getBuildingPoints = function () {
 
         // Stop any existing request
         if (manager.currentXHR) {
@@ -2102,17 +2106,17 @@ $(function() {
                 venueGuid: manager.venueGuid
             },
 
-            success: function(data) {
+            success: function (data) {
 
                 manager.buildingPts = data;
                 $(manager.map).trigger('bldgPtsDataReady');
 
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
 
                 var errorMsg;
 
-                try{
+                try {
                     var response = JSON.parse(xhr.responseText);
 
                     if (xhr.status == 404 || xhr.status == 423) {
@@ -2128,7 +2132,7 @@ $(function() {
                     }
 
                 }
-                catch (unknownException){
+                catch (unknownException) {
                     errorMsg = "There was a problem getting route data, please try again later. Status: Unknown server error";
                 }
 
@@ -2145,7 +2149,7 @@ $(function() {
     /**
      * Get data for a single route
      */
-    MapManager.prototype.getSingleRouteData = function() {
+    MapManager.prototype.getSingleRouteData = function () {
 
         // get start point
         var startPointId = $("#route-start-point-select").select2("val");
@@ -2162,8 +2166,7 @@ $(function() {
         // get accessible flag
         var isAccessible = document.querySelector('#route-isAccessible').checked;
         if ((typeof startPointId[0] != "undefined" && typeof endPointId[0] != "undefined") &&
-            (startPointId[0] == endPointId[0]))
-        {
+            (startPointId[0] == endPointId[0])) {
             var flashError = new FlashBang();
             flashError.msg = "Starting point and destination cannot be the same.";
             flashError.createError();
@@ -2183,14 +2186,14 @@ $(function() {
             manager.currentXHR = $.ajax('/lbs/ajax/single-route-data.json', {
 
                 data: {
-                    floorId:      manager.floorId,
+                    floorId: manager.floorId,
                     startPointId: startPointId[0],
-                    endPointId:   endPointId[0],
+                    endPointId: endPointId[0],
                     isAccessible: isAccessible,
                     venueGuid: manager.venueGuid
                 },
 
-                success: function(data) {
+                success: function (data) {
 
                     // Get the route pts
                     var routePts = data.pointIds.split(',');
@@ -2215,7 +2218,7 @@ $(function() {
                     }
 
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
 
                     var errorMsg;
 
@@ -2259,7 +2262,7 @@ $(function() {
     /**
      * Reset route UI
      */
-    MapManager.prototype.resetRouteUI = function(targetSelect, removeListOnly) {
+    MapManager.prototype.resetRouteUI = function (targetSelect, removeListOnly) {
 
         // set default target to reset both route select fields
         if (typeof targetSelect == "undefined" || targetSelect != null) {
@@ -2293,7 +2296,7 @@ $(function() {
     /**
      * Draw Route
      */
-    MapManager.prototype.drawRoute = function(routePoints) {
+    MapManager.prototype.drawRoute = function (routePoints) {
 
         var drawRoutePts = [];
         var firstRoutePts = [];
@@ -2302,20 +2305,20 @@ $(function() {
         var isAccessible = true;
 
         // get first/starting point
-        var firstPoint = $.grep(manager.buildingPts, function(n, i) {
+        var firstPoint = $.grep(manager.buildingPts, function (n, i) {
             return routePoints[0] == n.id
         });
 
         // get last/destination point
-        var lastPoint = $.grep(manager.buildingPts, function(n, i) {
-            return routePoints[routePoints.length-1] == n.id
+        var lastPoint = $.grep(manager.buildingPts, function (n, i) {
+            return routePoints[routePoints.length - 1] == n.id
         });
 
-        routePoints.forEach(function(routePoint) {
+        routePoints.forEach(function (routePoint) {
 
             // find the route point in the points array
-            var point = $.grep(manager.points, function(n, i){
-                return n.data.id ==  routePoint;
+            var point = $.grep(manager.points, function (n, i) {
+                return n.data.id == routePoint;
             });
 
             // if we have a point then lets add it to list of points to draw
@@ -2343,12 +2346,12 @@ $(function() {
             }
 
             // find portal point that leads to last point in route
-            firstPortalPoint = $.grep(manager.buildingPts, function(n, i) {
+            firstPortalPoint = $.grep(manager.buildingPts, function (n, i) {
                 return routePoint == n.id && n.floorId == manager.floorId && n.portalId
             });
 
             // find portal point that leads to last point in route
-            lastPortalPoint = $.grep(manager.buildingPts, function(n, i) {
+            lastPortalPoint = $.grep(manager.buildingPts, function (n, i) {
                 return routePoint == n.id && n.floorId != manager.floorId && n.portalId
             });
 
@@ -2393,15 +2396,15 @@ $(function() {
         if (firstRoutePts.length > 0 || lastRoutePts.length > 0 && portalPts.length > 1) {
 
             // add some data to the points
-            firstRoutePts.forEach(function(point){
+            firstRoutePts.forEach(function (point) {
                 point.floorName = manager.floorNames[point.floorId];
-                point.iconUrl =  (point.customImageUrl) ? point.customImageUrl : manager.icon_base_url + point.poiType +'.png';
+                point.iconUrl = (point.customImageUrl) ? point.customImageUrl : manager.icon_base_url + point.poiType + '.png';
             });
 
             // add some data to the points
-            lastRoutePts.forEach(function(point){
+            lastRoutePts.forEach(function (point) {
                 point.floorName = manager.floorNames[point.floorId];
-                point.iconUrl =  (point.customImageUrl) ? point.customImageUrl : manager.icon_base_url + point.poiType +'.png';
+                point.iconUrl = (point.customImageUrl) ? point.customImageUrl : manager.icon_base_url + point.poiType + '.png';
             });
 
             // add to data object for mustache and init UI
@@ -2425,7 +2428,7 @@ $(function() {
         } else if ((firstPoint[0].floorId == lastPoint[0].floorId) && firstPoint[0].floorId != manager.floorId) {
 
             // deeplink to route
-            var pts = [routePoints[0], routePoints[routePoints.length-1]];
+            var pts = [routePoints[0], routePoints[routePoints.length - 1]];
             manager.multiFloorRoutePts = pts;
             $('#route-list-container').css('border', 'none');
             $("#level-select").val(lastPoint[0].floorId).change();
@@ -2442,12 +2445,12 @@ $(function() {
 
         // add polyline to map, if route is inaccessible add dash array
         if (isAccessible == false) {
-            lineOptions.dashArray =  "2, 10";
+            lineOptions.dashArray = "2, 10";
         }
 
         // only draw the route if there are pts on the current floor
         if (drawRoutePts.length > 1) {
-            route  = L.polyline(drawRoutePts, lineOptions).addTo(manager.map).bringToFront();
+            route = L.polyline(drawRoutePts, lineOptions).addTo(manager.map).bringToFront();
             manager.map.fitBounds(route.getBounds());
         } else {
             route = 0;
@@ -2459,7 +2462,7 @@ $(function() {
     /**
      * Init the multifloor route UI using mustache
      */
-    MapManager.prototype.initMultiFloorRouteUI = function(routeData, routePoints, lastPoint) {
+    MapManager.prototype.initMultiFloorRouteUI = function (routeData, routePoints, lastPoint) {
 
         // output mustache template
         Mustache.tags = ['{|', '|}'];
@@ -2468,25 +2471,25 @@ $(function() {
         $('#routes-list-container h3').remove();
         $('#routes-list-container').addClass('border-top');
 
-        $('#routes-list-container ul').on('mouseover', function(e){
+        $('#routes-list-container ul').on('mouseover', function (e) {
             if ($(this).data('floorId') != manager.floorId) {
                 e.preventDefault;
                 $(this).next().show();
             }
         });
 
-        $('#routes-list-container ul').on('mouseleave', function(e){
+        $('#routes-list-container ul').on('mouseleave', function (e) {
             if ($(this).data('floorId') != manager.floorId) {
                 e.preventDefault;
                 $(this).next().hide();
             }
         });
 
-        $('#routes-list-container ul').on('click', function(e) {
+        $('#routes-list-container ul').on('click', function (e) {
             var routeFloorId = $(this).data('floorId');
             if (routeFloorId != manager.floorId) {
                 e.preventDefault;
-                var pts = [routePoints[0], routePoints[routePoints.length-1]];
+                var pts = [routePoints[0], routePoints[routePoints.length - 1]];
                 manager.multiFloorRoutePts = pts;
                 $('#route-list-container').removeClass('border-top');
                 $('#routes-list-container ul').off('click');
@@ -2501,18 +2504,18 @@ $(function() {
     /**
      * Remove All Routes
      */
-    MapManager.prototype.removeAllRoutes = function() {
+    MapManager.prototype.removeAllRoutes = function () {
 
-        try{
+        try {
 
             //delete routes from the map
-            manager.routes.forEach(function(route) {
+            manager.routes.forEach(function (route) {
                 manager.map.removeLayer(route.data);
             });
 
             manager.routes = [];
 
-        } catch(e) {
+        } catch (e) {
 
             console.log('error removing routes');
 
@@ -2523,7 +2526,7 @@ $(function() {
     /**
      * Reset routes
      */
-    MapManager.prototype.resetRoutes = function() {
+    MapManager.prototype.resetRoutes = function () {
 
         // Stop any existing request
         if (manager.currentXHR) {
@@ -2539,7 +2542,7 @@ $(function() {
                 venueGuid: manager.venueGuid
             },
 
-            success: function() {
+            success: function () {
 
                 // Set error msg
                 var successMsg = "Route generation has been started.";
@@ -2552,13 +2555,13 @@ $(function() {
 
                 // Disable routes UI
                 $('#reset-routes').prop("disabled", true);
-                $('#route-look-form-container, #routes-list-container').fadeOut(function(){
+                $('#route-look-form-container, #routes-list-container').fadeOut(function () {
                     manager.resetRouteUI();
                     $('#routes-progress-container').fadeIn();
                 });
 
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
 
                 var errorMsg;
                 var response = JSON.parse(xhr.responseText);
@@ -2588,7 +2591,7 @@ $(function() {
     /**
      * Toggle Show/Hide for routes
      */
-    MapManager.prototype.toggleRoutes = function() {
+    MapManager.prototype.toggleRoutes = function () {
         if (manager.selectedRoute != 0) {
             if (manager.map) {
                 manager.map.removeLayer(manager.selectedRoute);
@@ -2605,7 +2608,7 @@ $(function() {
     /**
      * Get zone data
      */
-    MapManager.prototype.getZoneData = function() {
+    MapManager.prototype.getZoneData = function () {
 
         manager.zones = [];
 
@@ -2616,19 +2619,19 @@ $(function() {
                 venueGuid: manager.venueGuid,
                 mapName: manager.mapName
             },
-            success: function(data) {
+            success: function (data) {
 
                 // set segment data and init
                 manager.zones = data;
                 manager.initZones();
 
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
 
                 if (status != 'abort') {
 
                     // Set error msg
-                    var errorMsg = "There was a problem getting zone data. Status: "+xhr.status;
+                    var errorMsg = "There was a problem getting zone data. Status: " + xhr.status;
                     var flashError = new FlashBang();
                     flashError.msg = errorMsg;
                     flashError.createError();
@@ -2640,21 +2643,21 @@ $(function() {
 
     };
 
-    MapManager.prototype.initZones = function() {
+    MapManager.prototype.initZones = function () {
 
         drawZones = [];
 
         // get zones for correct floor
-        manager.zones.forEach(function(zone) {
+        manager.zones.forEach(function (zone) {
             manager.zoneMapId = zone.mapId;
             return;
         });
 
         // draw the zones
-        manager.zones.forEach(function(zone) {
+        manager.zones.forEach(function (zone) {
 
             // Add lat/long or xy based on venue supports geocoordinates flag
-            if (manager.supportsGeographicCoordinates == true){
+            if (manager.supportsGeographicCoordinates == true) {
                 coords = new L.LatLng(zone.shape.data.latitude, zone.shape.data.longitude);
             } else {
                 zoneX = manager.getPointX(zone.shape.data.latitude * manager.getZoom());
@@ -2682,11 +2685,11 @@ $(function() {
     /**
      * Create the zone list
      */
-    MapManager.prototype.createZonesList = function() {
+    MapManager.prototype.createZonesList = function () {
 
         zoneData = {};
         tmpZones = [];
-        manager.zones.forEach(function(zone) {
+        manager.zones.forEach(function (zone) {
             tmpZones.push(zone);
         });
         zoneData.zones = tmpZones;
@@ -2702,7 +2705,7 @@ $(function() {
     /**
      * Zone click handler
      */
-    MapManager.prototype.onZoneClick = function() {
+    MapManager.prototype.onZoneClick = function () {
 
         if (!manager.isAddZoneMode && !manager.isEditMode && !manager.isDeleteMode) {
             manager.createZoneForm(this.data.id);
@@ -2714,9 +2717,9 @@ $(function() {
     /**
      * Center on the Zone
      */
-    MapManager.prototype.centerOnZone = function(zoneId) {
+    MapManager.prototype.centerOnZone = function (zoneId) {
 
-        manager.zones.forEach(function(zone) {
+        manager.zones.forEach(function (zone) {
             if (zone.data.id == zoneId) {
                 if (manager.supportsGeographicCoordinates == true) {
                     coords = new L.LatLng(zone.data.shape.data.latitude, zone.data.shape.data.longitude);
@@ -2734,7 +2737,7 @@ $(function() {
     /**
      * Creates and saves the zone data
      */
-    MapManager.prototype.createZoneForm = function(zoneId, zone) {
+    MapManager.prototype.createZoneForm = function (zoneId, zone) {
 
         manager = this;
 
@@ -2754,20 +2757,20 @@ $(function() {
 
         if (typeof zoneId == 'undefined' || zoneId == null) {
             uri = 'add';
-        } else{
-            uri = zoneId+'/edit';
+        } else {
+            uri = zoneId + '/edit';
         }
 
         // Get the data for the zone
-        manager.currentXHR = $.ajax('/lbs/ajax/zone/'+ uri, {
+        manager.currentXHR = $.ajax('/lbs/ajax/zone/' + uri, {
             data: {
                 venueGuid: manager.venueGuid
             },
-            success: function(data) {
+            success: function (data) {
 
                 if (typeof zoneId == 'undefined' || zoneId == null) {
 
-                    $('#zones-list-container').fadeOut('fast', function() {
+                    $('#zones-list-container').fadeOut('fast', function () {
                         $('#zones-form-container').html(data).fadeIn();
                         manager.initZoneSaveForm();
                         manager.addDataToZoneForm(zone);
@@ -2775,7 +2778,7 @@ $(function() {
 
                 } else {
 
-                    $('#zones-list-container').fadeOut('fast', function() {
+                    $('#zones-list-container').fadeOut('fast', function () {
                         $('#zones-form-container').html(data).fadeIn();
                         manager.initZoneSaveForm();
                         $('#zone_save_venueGuid').val(manager.venueGuid);
@@ -2784,12 +2787,12 @@ $(function() {
                 }
 
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
 
                 if (status != 'abort') {
 
                     // Set error msg
-                    var errorMsg = "There was a problem with the server. Status: "+xhr.status;
+                    var errorMsg = "There was a problem with the server. Status: " + xhr.status;
                     var flashError = new FlashBang();
                     flashError.msg = errorMsg;
                     flashError.createError();
@@ -2803,19 +2806,19 @@ $(function() {
     /**
      * Create the zone form
      */
-    MapManager.prototype.initZoneSaveForm = function() {
+    MapManager.prototype.initZoneSaveForm = function () {
 
         // Get cooldown value
         var coolDown = $('#zone_save_coolDown').val();
 
         if (coolDown == '') {
-            var hours  = 1;
-            var minutes  = 0;
+            var hours = 1;
+            var minutes = 0;
             cooldown = parseInt(hours * 60) + parseInt(minutes);
             $('#zone_save_coolDown').val(cooldown);
         } else {
-            var hours  = Math.floor(coolDown/60);
-            var minutes  = coolDown % 60;
+            var hours = Math.floor(coolDown / 60);
+            var minutes = coolDown % 60;
         }
 
         // Set cool down select menus
@@ -2828,7 +2831,7 @@ $(function() {
         }
 
         // Add form 'submit' event listener
-        $('#zone-form').on('submit', function(e) {
+        $('#zone-form').on('submit', function (e) {
 
             e.preventDefault();
 
@@ -2841,17 +2844,17 @@ $(function() {
             $.ajax(url, {
                 type: 'POST',
                 data: data,
-                success: function() {
+                success: function () {
 
                     manager.isZoneChanged = true;
                     $('#add-zone-back').trigger('click');
                     manager.isZoneAdded = false;
 
                 },
-                error: function(xhr) {
+                error: function (xhr) {
 
                     // Set error msg
-                    var errorMsg = "There was a problem initializing the zone save form. Status: "+xhr.status;
+                    var errorMsg = "There was a problem initializing the zone save form. Status: " + xhr.status;
                     var flashError = new FlashBang();
                     flashError.msg = errorMsg;
                     flashError.createError();
@@ -2866,7 +2869,7 @@ $(function() {
     /**
      * Add data to zone form
      */
-    MapManager.prototype.addDataToZoneForm = function(layer) {
+    MapManager.prototype.addDataToZoneForm = function (layer) {
 
         var zone = manager.map.project(layer._latlng);
         var radius = layer._mRadius;
@@ -2889,9 +2892,9 @@ $(function() {
     /**
      * Remove last Zone from the list, for cancel
      */
-    MapManager.prototype.removeLastZone = function() {
+    MapManager.prototype.removeLastZone = function () {
 
-        if(manager.isZoneAdded) {
+        if (manager.isZoneAdded) {
             lastZone = manager.zones.length - 1;
             manager.map.removeLayer(manager.zones[lastZone]);
             manager.isAddZoneMode = false;
@@ -2903,10 +2906,10 @@ $(function() {
     /**
      * Remove All Zones
      */
-    MapManager.prototype.removeAllZones = function() {
+    MapManager.prototype.removeAllZones = function () {
 
         //delete segment from the map
-        manager.zones.forEach(function(zone) {
+        manager.zones.forEach(function (zone) {
             manager.map.removeLayer(zone);
         });
 
@@ -2917,26 +2920,26 @@ $(function() {
     /**
      * Toggle Show/Hide for zones
      */
-    MapManager.prototype.toggleZones = function(action) {
+    MapManager.prototype.toggleZones = function (action) {
 
-        action = typeof action !== 'undefined' ? action: 'toggle';
+        action = typeof action !== 'undefined' ? action : 'toggle';
 
         switch (action) {
             case 'toggle':
-                manager.zones.forEach(function(zone) {
+                manager.zones.forEach(function (zone) {
                     $(zone._container).toggle();
                 });
 
                 break;
             case 'on':
             case 1:
-                manager.zones.forEach(function(zone) {
+                manager.zones.forEach(function (zone) {
                     $(zone._container).show();
                 });
                 break;
             case 'off':
             case 0:
-                manager.zones.forEach(function(zone) {
+                manager.zones.forEach(function (zone) {
                     $(zone._container).hide();
                 });
                 break;
@@ -2947,7 +2950,7 @@ $(function() {
     /**
      * Get shape options
      */
-    MapManager.prototype.getCircleOptions = function(isDrawMode) {
+    MapManager.prototype.getCircleOptions = function (isDrawMode) {
 
         isDrawMode = (typeof isDrawMode == "undefined") ? false : true;
 
@@ -2970,9 +2973,9 @@ $(function() {
     /**
      * Save multiple zones
      */
-    MapManager.prototype.saveZones = function(zones) {
+    MapManager.prototype.saveZones = function (zones) {
         zonesData = [];
-        zones.forEach(function(zone) {
+        zones.forEach(function (zone) {
             coords = manager.map.project(zone._latlng);
             if (manager.supportsGeographicCoordinates == true) {
                 latLng = manager.map.unproject(coords);
@@ -2999,7 +3002,7 @@ $(function() {
                 mapName: manager.mapName,
                 venueGuid: manager.venueGuid
             },
-            success: function(data) {
+            success: function (data) {
 
                 // Reset points using data returned
                 manager.removeAllZones();
@@ -3007,10 +3010,10 @@ $(function() {
                 manager.initZones();
 
             },
-            error: function(xhr) {
+            error: function (xhr) {
 
                 // Set error msg
-                var errorMsg = "There was a problem saving zone data. Status: "+ xhr.status;
+                var errorMsg = "There was a problem saving zone data. Status: " + xhr.status;
                 var flashError = new FlashBang();
                 flashError.msg = errorMsg;
                 flashError.createError();
@@ -3024,11 +3027,11 @@ $(function() {
      * Delete multiple zones,
      * Will either take an array of zones or a single zoneId
      */
-    MapManager.prototype.deleteZones = function() {
+    MapManager.prototype.deleteZones = function () {
 
         zonesData = [];
 
-        manager.zonesToDelete.forEach(function(zone) {
+        manager.zonesToDelete.forEach(function (zone) {
             zoneObj = {};
             if (typeof zone == 'object') {
                 zoneObj.id = zone.data.id;
@@ -3047,7 +3050,7 @@ $(function() {
                 venueGuid: manager.venueGuid,
                 mapName: manager.mapName
             },
-            success: function(data) {
+            success: function (data) {
 
                 // Reset points using data returned
                 manager.zonesToDelete = [];
@@ -3056,12 +3059,12 @@ $(function() {
                 manager.initZones();
 
             },
-            error: function(xhr) {
+            error: function (xhr) {
 
                 manager.zonesToDelete = [];
 
                 // Set error msg
-                var errorMsg = "There was a problem deleting zone data. Status: "+xhr.status;
+                var errorMsg = "There was a problem deleting zone data. Status: " + xhr.status;
                 var flashError = new FlashBang();
                 flashError.msg = errorMsg;
                 flashError.createError();
@@ -3078,7 +3081,7 @@ $(function() {
     /**
      * Load the svg then get max size based on container &  map aspect ratio
      */
-    MapManager.prototype.getMapDimensions = function(svg) {
+    MapManager.prototype.getMapDimensions = function (svg) {
 
         if (svg) {
 
@@ -3088,9 +3091,9 @@ $(function() {
             $.ajax({
                 type: "GET",
                 url: svg,
-                success: function(data) {
+                success: function (data) {
 
-                    try{
+                    try {
 
                         // import the svg xml data and get the width height
                         var svgData = $(data);
@@ -3098,8 +3101,8 @@ $(function() {
                         manager.svgHeight = Math.floor($(svgData).filter(":first").attr("height").replace("px", ""));
 
                         // get container size
-                        manager.mapContainerWidth  = $('#map').width() * .9;
-                        manager.mapContainerHeight  = $('#map').height() * .9;
+                        manager.mapContainerWidth = $('#map').width() * .9;
+                        manager.mapContainerHeight = $('#map').height() * .9;
 
                         // calc initial size
                         var aspectRatio = manager.svgWidth / manager.svgHeight;
@@ -3121,7 +3124,7 @@ $(function() {
                             manager.mapHeight = manager.mapContainerHeight;
                         }
 
-                    } catch(e) {
+                    } catch (e) {
 
                         var errorMsg = "Error displaying map. Check SVG Metadata";
                         var flashError = new FlashBang();
@@ -3137,7 +3140,7 @@ $(function() {
                     }
 
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     if (xhr.status = 404) {
                         var errorMsg = "Error loading map file. Status: 404";
                         var flashError = new FlashBang();
@@ -3159,7 +3162,7 @@ $(function() {
             flashError.createError();
 
             // wait & trigger ready event and remove listener
-            setTimeout(function(){
+            setTimeout(function () {
                 $('#map').trigger('sizeReady');
                 $('#map').off('load');
             }, 500)
@@ -3172,7 +3175,7 @@ $(function() {
      MISC.
      ========================================================================== */
 
-    MapManager.prototype.revertLayers = function() {
+    MapManager.prototype.revertLayers = function () {
 
         for (var toolbarId in manager.drawControl._toolbars) {
             toolbar = manager.drawControl._toolbars[toolbarId];
@@ -3185,21 +3188,21 @@ $(function() {
     /**
      * Get Zoom, because zoom levels aren't proportional
      */
-    MapManager.prototype.getZoom = function() {
+    MapManager.prototype.getZoom = function () {
 
         zoom = '';
-        switch(manager.map.getZoom()){
-            case 18 : zoom = .25;
+        switch (manager.map.getZoom()) {
+            case 18: zoom = .25;
                 break;
-            case 19 : zoom = .5;
+            case 19: zoom = .5;
                 break;
-            case 20 : zoom = 1;
+            case 20: zoom = 1;
                 break;
-            case 21 : zoom = 2;
+            case 21: zoom = 2;
                 break;
-            case 22 : zoom = 4;
+            case 22: zoom = 4;
                 break;
-            case 23 : zoom = 8;
+            case 23: zoom = 8;
                 break;
         }
         return zoom;
@@ -3208,11 +3211,11 @@ $(function() {
     /**
      * Returns true if any of the edit tools are active
      */
-    MapManager.prototype.isEditing = function() {
+    MapManager.prototype.isEditing = function () {
         return this.isEditMode || this.isDeleteMode;
     }
 
-    MapManager.prototype.confirmLeaving = function() {
+    MapManager.prototype.confirmLeaving = function () {
         if (this.isEditing()) {
             return confirm(MapManager.confirmLeavingPrompt);
         } else {

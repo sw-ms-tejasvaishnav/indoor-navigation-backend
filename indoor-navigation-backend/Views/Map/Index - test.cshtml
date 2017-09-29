@@ -1,0 +1,319 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <script src="~/Scripts/jquery-3.1.1.js"></script>
+    @*<script src='~/Scripts/bundles/phunwaremaascore/js/lib/heatmap/leaflet-src.js'></script>
+        <script src='~/Scripts/bundles/phunwaremaascore/js/lib/heatmap/leaflet.draw-src.js'></script>
+
+        <link href='~/Scripts/bundles/phunwaremaascore/css/lib/leaflet/leaflet.css' rel='stylesheet' />
+        <link href='~/Scripts/bundles/phunwaremaascore/css/lib/leaflet.draw/leaflet.draw.css' rel='stylesheet' />*@
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.0-beta.2.rc.2/leaflet.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.0-beta.2.rc.2/leaflet.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.2.3/leaflet.draw.js"></script>
+    @*<script src="~/Scripts/bundles/phunwaremaascore/js/lib/heatmap/leaflet.draw-src.js"></script>*@
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.2.3/leaflet.draw.css" rel="stylesheet" />
+    @*<script src="~/Scripts/leaflet/leaflet-src.js"></script>*@
+    @*<script src="~/Scripts/leaflet/leaflet.ajax.js"></script>*@
+</head>
+
+<body>
+    <div id="map" style="width: 580px; height: 550px; border: 1px solid #ccc"></div>
+    <div id='delete'>Delete Features</div>
+    <a href='#' id='export'>Export Features</a>
+
+    <script type="text/javascript">
+        // create the slippy map
+        var map = L.map('map', {
+            minZoom: 4,
+            maxZoom: 5,
+            center: [400, 400],
+            zoom: 4,
+            crs: L.CRS.Simple,
+        });
+
+        // dimensions of the image
+        var w = 620,
+            h = 620,
+            url = 'http://localhost/indoor-navigation-backend/Map/first-floor.svg';
+
+        // calculate the edges of the image, in coordinate space
+        var southWest = map.unproject([0, h], map.getMaxZoom() - 1);
+        var northEast = map.unproject([w, 0], map.getMaxZoom() - 1);
+        var bounds = new L.LatLngBounds(southWest, northEast);
+
+        // add the image overlay,
+        // so that it covers the entire map
+        L.imageOverlay(url, bounds).addTo(map);
+
+        // tell leaflet that the map is exactly as big as the image
+        map.setMaxBounds(bounds);
+
+        //create blank jeoJson variable and add in the map
+        //var myLayer = L.geoJson().addTo(map);
+        ////static data
+        //var geojsonFeature = {
+        //    "type": "Feature",
+        //    "properties": {
+        //        "name": "Coors Field",
+        //        "amenity": "Baseball Stadium",
+        //        "popupContent": "This is where the Rockies play!"
+        //    },
+        //    "geometry": {
+        //        "type": "MultiPoint",
+        //        "coordinates": [[16.1875, -2.9375], [23.6875, -2.9375]]
+        //    }
+        //};
+        //add static data in jeoJson variable.
+        //myLayer.addData(geojsonFeature);
+
+        // Initialise the FeatureGroup to store editable layers
+        var editableLayers = new L.FeatureGroup();
+        map.addLayer(editableLayers);
+
+        //var options = {
+        //    position: 'topleft',
+        //    draw: {
+        //        polygon: {
+        //            allowIntersection: false, // Restricts shapes to simple polygons
+        //            drawError: {
+        //                color: '#e1e100', // Color the shape will turn when intersects
+        //                message: '<strong>Oh snap!<strong> you can\'t draw that!' // Message that will show when intersect
+        //            },
+        //            shapeOptions: {
+        //                color: '#97009c'
+        //            }
+        //        },
+        //        polyline: {
+        //            shapeOptions: {
+        //                color: '#f357a1',
+        //                weight: 10
+        //            }
+        //        },
+        //        // disable toolbar item by setting it to false
+        //        polyline: false,
+        //        circle: false, // Turns off this drawing tool
+        //        polygon: false,
+        //        marker: false,
+        //        rectangle: false,
+        //    },
+        //    edit: {
+        //        featureGroup: editableLayers, //REQUIRED!!
+        //        remove: true
+        //    }
+        //};
+
+        // Initialise the draw control and pass it the FeatureGroup of editable layers
+        //var drawControl = new L.Control.Draw(options);
+        //map.addControl(drawControl);
+
+        //var points = [];
+        map.on('draw:created', function (e) {
+            var type = e.layerType,
+                layer = e.layer;
+            //if (type === 'polyline') {
+            //    layer.bindPopup('A polyline!');
+            //} else if (type === 'polygon') {
+            //    layer.bindPopup('A polygon!');
+            //} else if (type === 'marker')
+            //{ layer.bindPopup('marker!'); }
+            //else if (type === 'circle')
+            //{ layer.bindPopup('A circle!'); }
+            //else if (type === 'rectangle')
+            //{ layer.bindPopup('A rectangle!'); }
+
+            //debugger;
+            //alert(layer.feature.geometry.type);
+            editableLayers.addLayer(layer);
+            //alert('clicked');
+            //var shapes = getShapes(editableLayers);
+            //alert(layer.toGeoJSON()[0]);
+            saveInDB(layer);
+        });
+
+        //var getShapes = function (drawnItems) {
+        //    var shapes = [];
+        //    drawnItems.eachLayer(function (layer) {
+        //        // Note: Rectangle extends Polygon. Polygon extends Polyline.
+        //        // Therefore, all of them are instances of Polyline
+        //        if (layer instanceof L.Polyline) {
+        //            shapes.push(layer.getLatLngs())
+        //        }
+
+        //        if (layer instanceof L.Circle) {
+        //            shapes.push([layer.getLatLng()])
+        //        }
+
+        //        if (layer instanceof L.Marker) {
+        //            shapes.push([layer.getLatLng()]);
+        //        }
+
+        //    });
+        //    //debugger;
+        //    return shapes;
+        //};
+
+        function saveInDB(layer) {
+            var mapData = {
+                requestType: 'wayPoint',
+                isActive: true,
+                zoomLevel: -1,
+                maxZoomLevel: -1,
+                floorId: 0,
+                level: 0,
+                buildingId: 0,
+                isAccessible: true,
+                xAxis: 0,
+                yAxis: 0,
+                latitude: layer.getLatLng().lat,
+                longitude: layer.getLatLng().lng,
+                venueGuid: 0,
+            };
+            //$.post("Map/SaveToDb", mapData, function (data) {
+
+            //})
+            $.ajax('Map/SaveToDb', {
+                type: 'POST',
+                data: mapData,
+                success: function (data) {
+                    // Reset points using data returned
+                    //manager.removeAllPoints();
+                    //manager.points = data;
+                    //manager.initPoints();
+                    //manager.map.removeLayer(layer);
+
+                    // Refresh segments
+                    //manager.refreshSegments();
+                },
+                error: function (xhr) {
+                    // Set error msg
+                    //var errorMsg = "There was a problem saving waypoint data. Status: " + xhr.status;
+                    //var flashError = new FlashBang();
+                    //flashError.msg = errorMsg;
+                    //flashError.createError();
+                }
+            });
+        }
+
+        function saveSegment(layer) {
+            var segmentData = {
+                startPointId: 0,
+                endPointId: 1,
+                floorId: 0,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                isActive: true,
+                externalId: 0
+            };
+            $.ajax('Map/SaveSegment', {
+                type: 'POST',
+                data: segmentData,
+                success: function (data) {
+                    // Reset points using data returned
+                    //manager.removeAllPoints();
+                    //manager.points = data;
+                    //manager.initPoints();
+                    //manager.map.removeLayer(layer);
+
+                    // Refresh segments
+                    //manager.refreshSegments();
+                },
+                error: function (xhr) {
+                    // Set error msg
+                    //var errorMsg = "There was a problem saving waypoint data. Status: " + xhr.status;
+                    //var flashError = new FlashBang();
+                    //flashError.msg = errorMsg;
+                    //flashError.createError();
+                }
+            });
+        }
+
+        function onMapClick(e) {
+
+            var mapWidth = map._container.offsetWidth;
+            var mapHeight = map._container.offsetHeight;
+            console.log(e.containerPoint.x * w / mapWidth);
+            console.log(e.containerPoint.y * h / mapHeight);
+            console.log(e);
+        }
+
+        //Hadnel on right click functions TODO: MOVE THIS LATER
+        map.on('contextmenu', onMapClick);
+        //L.geoJson.ajax('GeoJson/data.geojson').addTo(map);
+
+        document.getElementById('export').onclick = function (e) {
+            // Extract GeoJson from featureGroup
+            var data = editableLayers.toGeoJSON();
+
+            // Stringify the GeoJson
+            var convertedData = 'text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(data));
+
+            // Create export
+            document.getElementById('export').setAttribute('href', 'data:' + convertedData);
+            document.getElementById('export').setAttribute('download', 'data.geojson');
+        }
+
+        var jsonDrawn = '{"type":"FeatureCollection","features":[{"type":"Feature","properties":{},"geometry":{"type":"Point","coordinates":[15.375177562236786,-2.892223011702299]}},{"type":"Feature","properties":{},"geometry":{"type":"Point","coordinates":[25.250177562236786,-3.204723011702299]}},{"type":"Feature","properties":{},"geometry":{"type":"Point","coordinates":[28.937677562236786,-9.7672230117023]}},{"type":"Feature","properties":{},"geometry":{"type":"Point","coordinates":[26.250177562236786,-15.5797230117023]}},{"type":"Feature","properties":{},"geometry":{"type":"Point","coordinates":[19.500177562236786,-20.2047230117023]}},{"type":"Feature","properties":{},"geometry":{"type":"LineString","coordinates":[[15.562677562236786,-2.767223011702299],[25.250177562236786,-3.142223011702299],[29.062677562236786,-9.6422230117023],[26.187677562236786,-15.3297230117023],[19.625177562236786,-20.0797230117023]]}}]}';
+
+        function getDrawnItems() {
+            var json = new L.GeoJSON(JSON.parse(jsonDrawn), {
+                pointToLayer: function (feature, latlng) {
+                    switch (feature.geometry.type) {
+                        case 'Polygon':
+                            //var ii = new L.Polygon(latlng)
+                            //ii.addTo(drawnItems);
+                            return L.polygon(latlng);
+                        case 'LineString':
+                            return L.polyline(latlng);
+                        case 'Point':
+                            return L.marker(latlng);
+                        default:
+                            return;
+                    }
+                },
+                onEachFeature: function (feature, layer) {
+                    layer.addTo(editableLayers);
+                }
+            });
+            //drawnItems.addLayer(json);
+        };
+
+        //getDrawnItems();
+
+        map.addControl(new L.Control.Draw({
+            edit: {
+                featureGroup: editableLayers,
+                poly: {
+                    allowIntersection: false
+                }
+            },
+            draw: {
+                polygon: {
+                    allowIntersection: false,
+                    showArea: true
+                }
+            }
+        }));
+
+        //    function getGeoJSON() {
+        //        $.getJSON("Map/GetMapData", function (data) {
+        //            cartoDBPoints = L.geoJson(data, {
+        //                pointToLayer: function (feature, latlng) {
+        //                    var marker = L.marker(latlng);
+        //                    marker.bindPopup('' + feature.properties.description + 'Submitted by ' + feature.properties.name + '');
+        //                    return marker;
+        //                }
+        //            }).addTo(map);
+        //        });
+        //    };
+
+        //getGeoJSON();
+
+    </script>
+</body>
+
+</html>

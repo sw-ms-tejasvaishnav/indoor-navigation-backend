@@ -4,10 +4,10 @@ var currentXHR;
 
 var currentVenue, currentBuilding, currentLevel;
 
-$(function(){
+$(function () {
 
     // Catch the click event on the compose button
-    $('.button-map-editor').on('click', function(e) {
+    $('.button-map-editor').on('click', function (e) {
         e.preventDefault();
         toggleMapEditorWindow();
     });
@@ -20,10 +20,10 @@ $(function(){
     // Map UI Event handler
     $("#dashboard-main-map-editor-container").on("click", handlers,
 
-        function(e) {
+        function (e) {
 
             var target = '';
-            if (e.currentTarget.id.toLowerCase() != '' ) {
+            if (e.currentTarget.id.toLowerCase() != '') {
                 target = e.currentTarget.id.toLowerCase();
             } else {
                 target = e.currentTarget.className.toLowerCase();
@@ -34,9 +34,9 @@ $(function(){
                 target != 'toggle-zones' &&
                 target != 'toggle-routes')
 
-            e.preventDefault();
+                e.preventDefault();
 
-            switch(target) {
+            switch (target) {
                 case 'add-point':
                     mapManager.toggleRoutes();
                     mapManager.toggleAddPoints();
@@ -54,7 +54,7 @@ $(function(){
                         $('.points-tab').trigger('click');
                     } else {
                         $('#routes-list, #point-list, #zones-list').hide();
-                        mapOverlay.css('right',  '-350px');
+                        mapOverlay.css('right', '-350px');
                         mapOverlay.find('#pull-tab i').removeClass('icon-chevron-right').addClass('icon-chevron-left');
                         mapManager.overlayState = 'closed';
                     }
@@ -62,10 +62,10 @@ $(function(){
 
                 case 'add-point-back':
                 case 'add-point-cancel-btn':
-                    $('#point-form-container').fadeOut('fast', function(){
-                        if (mapManager.isPointChanged){
+                    $('#point-form-container').fadeOut('fast', function () {
+                        if (mapManager.isPointChanged) {
                             getPointList(mapManager.floorId);
-                        } else{
+                        } else {
                             $('#point-list-container').fadeIn();
                         }
                         mapManager.isPointChanged = false;
@@ -75,10 +75,10 @@ $(function(){
 
                 case 'add-zone-back':
                 case 'add-zone-cancel-btn':
-                    $('#zones-form-container').fadeOut('fast', function(){
-                        if(mapManager.isZoneChanged){
+                    $('#zones-form-container').fadeOut('fast', function () {
+                        if (mapManager.isZoneChanged) {
                             getZoneList(mapManager.venueGuid, mapManager.buildingId);
-                        } else{
+                        } else {
                             $('#zones-list-container').fadeIn();
                         }
                         mapManager.isZoneChanged = false;
@@ -146,7 +146,7 @@ $(function(){
                 case 'reset-routes':
                     manager.toggleRoutes();
                     routeConfirm = confirm('Are you sure you want to reset all routes?');
-                    if (routeConfirm==true){
+                    if (routeConfirm == true) {
                         mapManager.resetRoutes();
                     }
                     break;
@@ -158,18 +158,18 @@ $(function(){
         });
 
     // Level select on change handler
-    $('#dashboard-main-map-editor-container').on('change', '#level-select, #venue-select, #building-select, #zone-cooldown-hours, #zone-cooldown-mins', function(e) {
+    $('#dashboard-main-map-editor-container').on('change', '#level-select, #venue-select, #building-select, #zone-cooldown-hours, #zone-cooldown-mins', function (e) {
 
         e.preventDefault();
         var target = '';
 
-        if (e.currentTarget.id.toLowerCase() != '' ) {
+        if (e.currentTarget.id.toLowerCase() != '') {
             target = e.currentTarget.id.toLowerCase();
         } else {
             target = e.currentTarget.className.toLowerCase();
         }
 
-        switch(target) {
+        switch (target) {
 
             case 'venue-select':
 
@@ -181,10 +181,10 @@ $(function(){
                         localStorage.setItem('lbsSelectedVenueId', id);
                     }
 
-                    mapManager.mapContainer.fadeOut('fast', function(){
+                    mapManager.mapContainer.fadeOut('fast', function () {
                         openMapEditorWindow(id);
                     });
-                    
+
                     // clear map interval
                     if (mapManager.checkRouteInterval != null) {
                         clearInterval(mapManager.checkRouteInterval);
@@ -203,17 +203,17 @@ $(function(){
                     venueGuid = $('#venue-select').val();
 
                     // store selected building
-                    if ( isLocalStorage() ) {
+                    if (isLocalStorage()) {
                         localStorage.setItem('lbsSelectedBuildingId', id);
                     }
-                    
+
                     // clear map interval
                     if (mapManager.checkRouteInterval != null) {
                         clearInterval(mapManager.checkRouteInterval);
                         mapManager.checkRouteInterval = null;
                     }
-                    
-                    mapManager.mapContainer.fadeOut('fast', function(){
+
+                    mapManager.mapContainer.fadeOut('fast', function () {
                         openMapEditorWindow(venueGuid, id);
                     });
                 } else {
@@ -232,7 +232,7 @@ $(function(){
                     $('#routes-list ul, #point-list, #zones-list').empty();
 
                     // store selected building
-                    if ( isLocalStorage() ) {
+                    if (isLocalStorage()) {
                         localStorage.setItem('lbsSelectedLevelId', id);
                     }
 
@@ -243,7 +243,7 @@ $(function(){
                     }
 
                     currentLevel = id;
-                    mapManager.mapContainer.fadeOut('fast', function(){
+                    mapManager.mapContainer.fadeOut('fast', function () {
                         mapManager.init(id);
                         $(this).fadeIn();
                     });
@@ -256,10 +256,10 @@ $(function(){
             case 'zone-cooldown-mins':
             case 'zone-cooldown-hours':
 
-               var hours = $('#zone-cooldown-hours').val();
-               var mins = $('#zone-cooldown-mins').val();
+                var hours = $('#zone-cooldown-hours').val();
+                var mins = $('#zone-cooldown-mins').val();
                 cooldown = parseInt(hours * 60) + parseInt(mins);
-               $('#zone_save_coolDown').val(cooldown);
+                $('#zone_save_coolDown').val(cooldown);
         }
 
     });
@@ -275,7 +275,7 @@ $(function(){
             zoomControl: true,
             streetViewControl: false,
             mapTypeControl: false,
-            center: new google.maps.LatLng(mapManager.data.map.latitude,  mapManager.data.map.longitude)
+            center: new google.maps.LatLng(mapManager.data.map.latitude, mapManager.data.map.longitude)
         };
 
         var mapRefsSetterOptions = {
@@ -289,7 +289,7 @@ $(function(){
 
     });
 
-    $('#saveMapReferencePts').on('click', function(e){
+    $('#saveMapReferencePts').on('click', function (e) {
 
         try {
 
@@ -304,7 +304,7 @@ $(function(){
             }
 
             // Get the data for the reach report
-            currentXHR = $.ajax('/lbs/ajax/map/referencePts/'+mapManager.floorId+'/add', {
+            currentXHR = $.ajax('/lbs/ajax/map/referencePts/' + mapManager.floorId + '/add', {
                 data: {
                     topRight: mapRefsSetter.mapOverlay.topRight.toString(),
                     topLeft: mapRefsSetter.mapOverlay.topLeft.toString(),
@@ -315,7 +315,7 @@ $(function(){
                     rotation: mapRefsSetter.rotation,
                     venueGuid: manager.venueGuid
                 },
-                success: function(data) {
+                success: function (data) {
 
                     $('#map-position-modal').modal('hide');
                     var flashSuccess = new FlashBang();
@@ -333,12 +333,12 @@ $(function(){
                         'bottomLeft:' + mapRefsSetter.mapOverlay.bottomLeft.toString());
 
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
 
                     if (status != 'abort') {
 
                         // Set error msg
-                        var errorMsg = "There was a problem getting point data. Status: "+xhr.status;
+                        var errorMsg = "There was a problem getting point data. Status: " + xhr.status;
                         if (xhr.responseText) errorMsg = jQuery.parseJSON(xhr.responseText).message;
                         if (status != 'abort') {
                             var flashError = new FlashBang();
@@ -351,7 +351,7 @@ $(function(){
                 }
             });
 
-        } catch(e) {
+        } catch (e) {
             console.log(e)
         }
 
@@ -359,7 +359,7 @@ $(function(){
 
 });
 
-function resetMap(venueGuid, buildingId, floorId){
+function resetMap(venueGuid, buildingId, floorId) {
 
     // Get the data for the reach report
     currentXHR = $.ajax('/lbs/building-data.json', {
@@ -369,23 +369,23 @@ function resetMap(venueGuid, buildingId, floorId){
             buildingId: buildingId
         },
 
-        success: function(data) {
+        success: function (data) {
 
             mapManager = new MapManager(data.map);
 
-            if (floorId){
+            if (floorId) {
                 mapManager.init(floorId);
             } else {
                 mapManager.init();
             }
 
         },
-        error: function(xhr, status, error) {
+        error: function (xhr, status, error) {
 
             if (status != 'abort') {
 
                 // Set error msg
-                var errorMsg = "There was a problem initializing the map editor. Status: "+xhr.status;
+                var errorMsg = "There was a problem initializing the map editor. Status: " + xhr.status;
                 if (xhr.responseText) errorMsg = jQuery.parseJSON(xhr.responseText).message;
                 if (status != 'abort') {
                     var flashError = new FlashBang();
@@ -418,11 +418,11 @@ function toggleMapEditorWindow() {
 /**
  * Open map editor window.
  */
-function openMapEditorWindow(venueGuid, buildingId, floorId){
+function openMapEditorWindow(venueGuid, buildingId, floorId) {
 
     // Set buildingId and floorId defaults
-    buildingId =  (typeof buildingId == 'undefined') ? '' : buildingId;
-    floorId    =  (typeof floorId == 'undefined') ? '' : floorId;
+    buildingId = (typeof buildingId == 'undefined') ? '' : buildingId;
+    floorId = (typeof floorId == 'undefined') ? '' : floorId;
 
     // Stop any existing request
     if (currentXHR) {
@@ -437,7 +437,7 @@ function openMapEditorWindow(venueGuid, buildingId, floorId){
             buildingId: buildingId
         },
 
-        success: function(data) {
+        success: function (data) {
 
             // Change the compose button status
             $('.button-map-editor')
@@ -456,7 +456,7 @@ function openMapEditorWindow(venueGuid, buildingId, floorId){
             // Create the map manager and switch to floor if present
             mapManager = new MapManager(data.map);
 
-            if (floorId){
+            if (floorId) {
                 mapManager.init(floorId);
             } else {
                 mapManager.init();
@@ -464,7 +464,7 @@ function openMapEditorWindow(venueGuid, buildingId, floorId){
 
             // Fade in and position map
             $(mapManager.mapContainer).fadeIn();
-            $(mapManager.mapContainer).on('mapReady', function(){
+            $(mapManager.mapContainer).on('mapReady', function () {
                 $('#dashboard-main-map-editor-container')
                     .data('status', 'open')
                     .css('margin-left', '0')
@@ -476,21 +476,21 @@ function openMapEditorWindow(venueGuid, buildingId, floorId){
             }
 
             // Set listeners for updating routes
-            $(mapManager.mapContainer).on('updateRoutesReady', function(){
+            $(mapManager.mapContainer).on('updateRoutesReady', function () {
                 $('#update-routes').removeClass('button-selected').addClass('button-blue');
             });
 
-            $(mapManager.mapContainer).on('updateRoutesDisable', function(){
+            $(mapManager.mapContainer).on('updateRoutesDisable', function () {
                 $('#update-routes').removeClass('button-blue').addClass('button-selected')
             });
 
         },
-        error: function(xhr, status, error) {
+        error: function (xhr, status, error) {
 
             if (status != 'abort') {
 
                 // Set error msg
-                var errorMsg = "There was a problem initializing the map editor. Status: "+xhr.status;
+                var errorMsg = "There was a problem initializing the map editor. Status: " + xhr.status;
                 if (xhr.responseText) errorMsg = jQuery.parseJSON(xhr.responseText).message;
                 if (status != 'abort') {
                     var flashError = new FlashBang();
@@ -509,7 +509,7 @@ function openMapEditorWindow(venueGuid, buildingId, floorId){
 /**
  * Get Point list
  */
-function getPointList(floorId){
+function getPointList(floorId) {
 
     // Stop any existing request
     if (currentXHR) {
@@ -522,7 +522,7 @@ function getPointList(floorId){
             floorId: floorId,
             venueGuid: manager.venueGuid
         },
-        success: function(data) {
+        success: function (data) {
 
             mapManager.removeAllPoints();
             mapManager.points = data;
@@ -533,12 +533,12 @@ function getPointList(floorId){
             $('#point-list-container').fadeIn();
 
         },
-        error: function(xhr, status, error) {
+        error: function (xhr, status, error) {
 
             if (status != 'abort') {
 
                 // Set error msg
-                var errorMsg = "There was a problem getting point data. Status: "+xhr.status;
+                var errorMsg = "There was a problem getting point data. Status: " + xhr.status;
                 if (xhr.responseText) errorMsg = jQuery.parseJSON(xhr.responseText).message;
                 if (status != 'abort') {
                     var flashError = new FlashBang();
@@ -555,7 +555,7 @@ function getPointList(floorId){
 /**
  * Get Zone list
  */
-function getZoneList(venueGuid, buildingId){
+function getZoneList(venueGuid, buildingId) {
 
     // Stop any existing request
     if (currentXHR) {
@@ -569,7 +569,7 @@ function getZoneList(venueGuid, buildingId){
             buildingId: buildingId,
             mapName: manager.mapName
         },
-        success: function(data) {
+        success: function (data) {
 
             mapManager.removeAllZones();
             manager.zones = data;
@@ -578,12 +578,12 @@ function getZoneList(venueGuid, buildingId){
             $('#zones-list-container').fadeIn();
 
         },
-        error: function(xhr, status, error) {
+        error: function (xhr, status, error) {
 
             if (status != 'abort') {
 
                 // Set error msg
-                var errorMsg = "There was a problem getting zone data. Status: "+xhr.status;
+                var errorMsg = "There was a problem getting zone data. Status: " + xhr.status;
                 if (xhr.responseText) errorMsg = jQuery.parseJSON(xhr.responseText).message;
                 if (status != 'abort') {
                     var flashError = new FlashBang();
@@ -601,8 +601,8 @@ function getZoneList(venueGuid, buildingId){
 /**
  * Close map editor window.
  */
-function closeMapEditorWindow(){
-    
+function closeMapEditorWindow() {
+
     // Confirm that the user actually wants to exit
     if (!mapManager.confirmLeaving()) return;
 
@@ -615,7 +615,7 @@ function closeMapEditorWindow(){
     $('#dashboard-main-map-editor-container')
         .removeData('status')
         .css('margin-left', '-2000px')
-        .on('transitionend', function() {
+        .on('transitionend', function () {
             $(this).off('transitionend');
             mapManager.resetMap();
         })
@@ -624,5 +624,4 @@ function closeMapEditorWindow(){
     $('#dashboard-main-content-container').stop().delay(200).fadeIn();
 
 }
-
 

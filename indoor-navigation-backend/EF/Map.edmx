@@ -1,0 +1,247 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="MapModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Point">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="annotation" Type="varchar" MaxLength="20" />
+          <Property Name="buildingId" Type="int" />
+          <Property Name="category" Type="varchar" MaxLength="20" />
+          <Property Name="createdAt" Type="datetime" />
+          <Property Name="customIconImageUrl" Type="varchar" MaxLength="1000" />
+          <Property Name="description" Type="varchar" MaxLength="2000" />
+          <Property Name="externalId" Type="int" />
+          <Property Name="floorId" Type="int" />
+          <Property Name="imageUrl" Type="varchar" MaxLength="2000" />
+          <Property Name="isAccessible" Type="bit" />
+          <Property Name="isActive" Type="bit" />
+          <Property Name="isExit" Type="bit" />
+          <Property Name="level" Type="int" />
+          <Property Name="latitude" Type="float" />
+          <Property Name="longitude" Type="float" />
+          <Property Name="maxZoomLevel" Type="int" />
+          <Property Name="name" Type="varchar" MaxLength="100" />
+          <Property Name="poiType" Type="int" />
+          <Property Name="portalId" Type="int" />
+          <Property Name="updatedAt" Type="datetime" />
+          <Property Name="x" Type="int" />
+          <Property Name="y" Type="int" />
+          <Property Name="zoomLevel" Type="int" />
+        </EntityType>
+        <EntityType Name="Rectangle">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="northEastLatitude" Type="float" Nullable="false" />
+          <Property Name="northEastLongitude" Type="float" Nullable="false" />
+          <Property Name="southWestLatitude" Type="float" Nullable="false" />
+          <Property Name="southWestLongitude" Type="float" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Segment">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="startPointId" Type="int" />
+          <Property Name="endPointId" Type="int" />
+          <Property Name="floorId" Type="int" />
+          <Property Name="createdAt" Type="datetime" />
+          <Property Name="updatedAt" Type="datetime" />
+          <Property Name="isActive" Type="bit" />
+          <Property Name="externalId" Type="int" />
+        </EntityType>
+        <EntityType Name="Zone">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="latitude" Type="float" />
+          <Property Name="longitude" Type="float" />
+          <Property Name="radius" Type="float" />
+          <Property Name="createdAt" Type="datetime" />
+          <Property Name="updatedAt" Type="datetime" />
+        </EntityType>
+        <EntityContainer Name="MapModelStoreContainer">
+          <EntitySet Name="Point" EntityType="Self.Point" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Rectangle" EntityType="Self.Rectangle" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Segment" EntityType="Self.Segment" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Zone" EntityType="Self.Zone" Schema="dbo" store:Type="Tables" />
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="MapModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Point">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="annotation" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="buildingId" Type="Int32" />
+          <Property Name="category" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="createdAt" Type="DateTime" Precision="3" />
+          <Property Name="customIconImageUrl" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <Property Name="description" Type="String" MaxLength="2000" FixedLength="false" Unicode="false" />
+          <Property Name="externalId" Type="Int32" />
+          <Property Name="floorId" Type="Int32" />
+          <Property Name="imageUrl" Type="String" MaxLength="2000" FixedLength="false" Unicode="false" />
+          <Property Name="isAccessible" Type="Boolean" />
+          <Property Name="isActive" Type="Boolean" />
+          <Property Name="isExit" Type="Boolean" />
+          <Property Name="level" Type="Int32" />
+          <Property Name="latitude" Type="Double" />
+          <Property Name="longitude" Type="Double" />
+          <Property Name="maxZoomLevel" Type="Int32" />
+          <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="poiType" Type="Int32" />
+          <Property Name="portalId" Type="Int32" />
+          <Property Name="updatedAt" Type="DateTime" Precision="3" />
+          <Property Name="x" Type="Int32" />
+          <Property Name="y" Type="Int32" />
+          <Property Name="zoomLevel" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Rectangle">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="northEastLatitude" Type="Double" Nullable="false" />
+          <Property Name="northEastLongitude" Type="Double" Nullable="false" />
+          <Property Name="southWestLatitude" Type="Double" Nullable="false" />
+          <Property Name="southWestLongitude" Type="Double" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Segment">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="startPointId" Type="Int32" />
+          <Property Name="endPointId" Type="Int32" />
+          <Property Name="floorId" Type="Int32" />
+          <Property Name="createdAt" Type="DateTime" Precision="3" />
+          <Property Name="updatedAt" Type="DateTime" Precision="3" />
+          <Property Name="isActive" Type="Boolean" />
+          <Property Name="externalId" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Zone">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="latitude" Type="Double" />
+          <Property Name="longitude" Type="Double" />
+          <Property Name="radius" Type="Double" />
+          <Property Name="createdAt" Type="DateTime" Precision="3" />
+          <Property Name="updatedAt" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityContainer Name="MapEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Points" EntityType="Self.Point" />
+          <EntitySet Name="Rectangles" EntityType="Self.Rectangle" />
+          <EntitySet Name="Segments" EntityType="Self.Segment" />
+          <EntitySet Name="Zones" EntityType="Self.Zone" />
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="MapModelStoreContainer" CdmEntityContainer="MapEntities">
+          <EntitySetMapping Name="Points">
+            <EntityTypeMapping TypeName="MapModel.Point">
+              <MappingFragment StoreEntitySet="Point">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="annotation" ColumnName="annotation" />
+                <ScalarProperty Name="buildingId" ColumnName="buildingId" />
+                <ScalarProperty Name="category" ColumnName="category" />
+                <ScalarProperty Name="createdAt" ColumnName="createdAt" />
+                <ScalarProperty Name="customIconImageUrl" ColumnName="customIconImageUrl" />
+                <ScalarProperty Name="description" ColumnName="description" />
+                <ScalarProperty Name="externalId" ColumnName="externalId" />
+                <ScalarProperty Name="floorId" ColumnName="floorId" />
+                <ScalarProperty Name="imageUrl" ColumnName="imageUrl" />
+                <ScalarProperty Name="isAccessible" ColumnName="isAccessible" />
+                <ScalarProperty Name="isActive" ColumnName="isActive" />
+                <ScalarProperty Name="isExit" ColumnName="isExit" />
+                <ScalarProperty Name="level" ColumnName="level" />
+                <ScalarProperty Name="latitude" ColumnName="latitude" />
+                <ScalarProperty Name="longitude" ColumnName="longitude" />
+                <ScalarProperty Name="maxZoomLevel" ColumnName="maxZoomLevel" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="poiType" ColumnName="poiType" />
+                <ScalarProperty Name="portalId" ColumnName="portalId" />
+                <ScalarProperty Name="updatedAt" ColumnName="updatedAt" />
+                <ScalarProperty Name="x" ColumnName="x" />
+                <ScalarProperty Name="y" ColumnName="y" />
+                <ScalarProperty Name="zoomLevel" ColumnName="zoomLevel" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Rectangles">
+            <EntityTypeMapping TypeName="MapModel.Rectangle">
+              <MappingFragment StoreEntitySet="Rectangle">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="northEastLatitude" ColumnName="northEastLatitude" />
+                <ScalarProperty Name="northEastLongitude" ColumnName="northEastLongitude" />
+                <ScalarProperty Name="southWestLatitude" ColumnName="southWestLatitude" />
+                <ScalarProperty Name="southWestLongitude" ColumnName="southWestLongitude" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Segments">
+            <EntityTypeMapping TypeName="MapModel.Segment">
+              <MappingFragment StoreEntitySet="Segment">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="startPointId" ColumnName="startPointId" />
+                <ScalarProperty Name="endPointId" ColumnName="endPointId" />
+                <ScalarProperty Name="floorId" ColumnName="floorId" />
+                <ScalarProperty Name="createdAt" ColumnName="createdAt" />
+                <ScalarProperty Name="updatedAt" ColumnName="updatedAt" />
+                <ScalarProperty Name="isActive" ColumnName="isActive" />
+                <ScalarProperty Name="externalId" ColumnName="externalId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Zones">
+            <EntityTypeMapping TypeName="MapModel.Zone">
+              <MappingFragment StoreEntitySet="Zone">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="latitude" ColumnName="latitude" />
+                <ScalarProperty Name="longitude" ColumnName="longitude" />
+                <ScalarProperty Name="radius" ColumnName="radius" />
+                <ScalarProperty Name="createdAt" ColumnName="createdAt" />
+                <ScalarProperty Name="updatedAt" ColumnName="updatedAt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
