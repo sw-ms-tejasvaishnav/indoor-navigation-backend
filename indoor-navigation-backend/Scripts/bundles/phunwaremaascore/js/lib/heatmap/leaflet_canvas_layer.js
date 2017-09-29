@@ -1,4 +1,4 @@
-if(typeof(L) !== 'undefined') {
+if (typeof (L) !== 'undefined') {
     /**
      * full canvas layer implementation for Leaflet
      */
@@ -36,14 +36,14 @@ if(typeof(L) !== 'undefined') {
             this._ctx = this._canvas.getContext('2d');
             this.currentAnimationFrame = -1;
             this.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
-                window.webkitRequestAnimationFrame || window.msRequestAnimationFrame || function(callback) {
-                return window.setTimeout(callback, 1000 / 60);
-            };
+                window.webkitRequestAnimationFrame || window.msRequestAnimationFrame || function (callback) {
+                    return window.setTimeout(callback, 1000 / 60);
+                };
             this.cancelAnimationFrame = window.cancelAnimationFrame || window.mozCancelAnimationFrame ||
-                window.webkitCancelAnimationFrame || window.msCancelAnimationFrame || function(id) { clearTimeout(id); };
+                window.webkitCancelAnimationFrame || window.msCancelAnimationFrame || function (id) { clearTimeout(id); };
         },
 
-        _createCanvas: function() {
+        _createCanvas: function () {
             var canvas;
             canvas = document.createElement('canvas');
             canvas.style.position = 'absolute';
@@ -74,7 +74,7 @@ if(typeof(L) !== 'undefined') {
             // hack: listen to predrag event launched by dragging to
             // set container in position (0, 0) in screen coordinates
             if (map.dragging.enabled()) {
-                map.dragging._draggable.on('predrag', function() {
+                map.dragging._draggable.on('predrag', function () {
                     var d = map.dragging._draggable;
                     L.DomUtil.setPosition(this._canvas, { x: -d._newPos.x, y: -d._newPos.y });
                 }, this);
@@ -88,7 +88,7 @@ if(typeof(L) !== 'undefined') {
                 'zoomend': this._endZoomAnim
             }, this);
 
-            if(this.options.tileLoader) {
+            if (this.options.tileLoader) {
                 this._initTileLoader();
             }
 
@@ -117,13 +117,13 @@ if(typeof(L) !== 'undefined') {
             var oldCenter = map._latLngToNewLayerPoint(e.center, e.zoom, e.center);
 
             var origin = {
-                x:  newCenter.x - oldCenter.x,
-                y:  newCenter.y - oldCenter.y
+                x: newCenter.x - oldCenter.x,
+                y: newCenter.y - oldCenter.y
             };
 
             var bg = back;
             var transform = L.DomUtil.TRANSFORM;
-            bg.style[transform] =  L.DomUtil.getTranslateString(origin) + ' scale(' + e.scale + ') ';
+            bg.style[transform] = L.DomUtil.getTranslateString(origin) + ' scale(' + e.scale + ') ';
         },
 
         _endZoomAnim: function () {
@@ -132,15 +132,15 @@ if(typeof(L) !== 'undefined') {
             this._backCanvas.style.display = 'none';
         },
 
-        getCanvas: function() {
+        getCanvas: function () {
             return this._canvas;
         },
 
-        getAttribution: function() {
+        getAttribution: function () {
             return this.options.attribution;
         },
 
-        draw: function() {
+        draw: function () {
             return this._reset();
         },
 
@@ -166,7 +166,7 @@ if(typeof(L) !== 'undefined') {
             return this;
         },
 
-        setZIndex: function(zIndex) {
+        setZIndex: function (zIndex) {
             this._canvas.style.zIndex = zIndex;
         },
 
@@ -194,19 +194,19 @@ if(typeof(L) !== 'undefined') {
 
         _updateOpacity: function () { },
 
-        _render: function() {
+        _render: function () {
             if (this.currentAnimationFrame >= 0) {
                 this.cancelAnimationFrame.call(window, this.currentAnimationFrame);
             }
             this.currentAnimationFrame = this.requestAnimationFrame.call(window, this.render);
         },
 
-        __getTransform: function(el) {
+        __getTransform: function (el) {
 
             var results = $(el).css('transform').match(/matrix(?:(3d)\(-{0,1}\d+(?:, -{0,1}\d+)*(?:, (-{0,1}\d+))(?:, (-{0,1}\d+))(?:, (-{0,1}\d+)), -{0,1}\d+\)|\(-{0,1}\d+(?:, -{0,1}\d+)*(?:, (-{0,1}\d+))(?:, (-{0,1}\d+))\))/);
 
-            if(!results) return "0, 0, 0";
-            if(results[1] == '3d') return results.slice(2,5);
+            if (!results) return "0, 0, 0";
+            if (results[1] == '3d') return results.slice(2, 5);
 
             results.push(0);
             results = results.slice(5, 8);
@@ -219,7 +219,7 @@ if(typeof(L) !== 'undefined') {
         },
 
         // use direct: true if you are inside an animation frame call
-        redraw: function(direct) {
+        redraw: function (direct) {
 
             if (direct) {
                 this.render();
@@ -229,7 +229,7 @@ if(typeof(L) !== 'undefined') {
 
         },
 
-        onResize: function() {
+        onResize: function () {
 
             // get the transform offset of the parent map and match the position on resize
             var transform = this.__getTransform(".leaflet-map-pane");
@@ -240,7 +240,7 @@ if(typeof(L) !== 'undefined') {
 
         },
 
-        render: function() {
+        render: function () {
             throw new Error('render function should be implemented');
         }
 
