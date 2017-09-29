@@ -15,9 +15,9 @@ function MapRefSetter(options) {
 
 }
 
-$(function() {
+$(function () {
 
-    MapRefSetter.prototype.init = function() {
+    MapRefSetter.prototype.init = function () {
 
         this.map = new google.maps.Map(document.getElementById(this.mapContainer), this.mapOptions);
         this.map.setTilt(0);
@@ -26,7 +26,7 @@ $(function() {
 
     };
 
-    MapRefSetter.prototype.createBoundBox = function() {
+    MapRefSetter.prototype.createBoundBox = function () {
 
         var _this = this;
 
@@ -47,33 +47,33 @@ $(function() {
         this.mapOverlay = new MapGoogleOverlay(bounds, this.mapUrl, this.map, this.mapManager);
 
         // Add initial rotation on ready
-        $(this.mapOverlay).on('ready', function(){
-            _this.setRotation(_this.rotation+'deg');
+        $(this.mapOverlay).on('ready', function () {
+            _this.setRotation(_this.rotation + 'deg');
             _this.setAlpha(_this.alpha);
             _this.setScale(_this.scale);
         });
 
     };
 
-    MapRefSetter.prototype.setRotation = function(value) {
+    MapRefSetter.prototype.setRotation = function (value) {
 
         this.rotation = value;
-        $(this.mapOverlay.imageContainer).css("transform", "rotate("+this.rotation+")");
+        $(this.mapOverlay.imageContainer).css("transform", "rotate(" + this.rotation + ")");
         this.mapOverlay.draw(true);
         $("#rotation-value").val(value.replace('deg', ''));
 
     };
 
-    MapRefSetter.prototype.setScale = function(value) {
+    MapRefSetter.prototype.setScale = function (value) {
 
         this.scale = value;
-        $(this.mapOverlay.boundBox).css("transform", "scale("+this.scale+")");
+        $(this.mapOverlay.boundBox).css("transform", "scale(" + this.scale + ")");
         this.mapOverlay.draw(true);
         $("#scale-value").val(value);
 
     };
 
-    MapRefSetter.prototype.setAlpha = function(value) {
+    MapRefSetter.prototype.setAlpha = function (value) {
 
         this.alpha = value;
         $(this.mapOverlay.imageContainer).css("opacity", value);
@@ -81,10 +81,10 @@ $(function() {
 
     };
 
-    MapRefSetter.prototype.updateScaleValue = function() {
+    MapRefSetter.prototype.updateScaleValue = function () {
 
         this.scaleFactor = $("#scale-value").val().toString();
-        this.rotation = $("#rotation-value").val().toString()+'deg';
+        this.rotation = $("#rotation-value").val().toString() + 'deg';
         this.alpha = $("#alpha-value").val().toString();
 
         this.setRotation(this.rotation);
@@ -93,7 +93,7 @@ $(function() {
 
     };
 
-    MapRefSetter.prototype.createUI = function() {
+    MapRefSetter.prototype.createUI = function () {
 
         var _this = this;
 
@@ -103,15 +103,15 @@ $(function() {
         } else {
             $('#show-save').css("display", "block");
             $('#saveMapReferencePts').css("display", "none");
-        }        
-        
+        }
+
         $("#alpha-slider").slider({
             range: "max",
             min: 0,
             max: 1,
             value: _this.alpha,
-            step:.1,
-            slide: function(event, ui) {
+            step: .1,
+            slide: function (event, ui) {
                 _this.setAlpha(ui.value);
             }
         });
@@ -121,26 +121,26 @@ $(function() {
             min: -360,
             max: 360,
             value: _this.rotation,
-            step:.001,
-            slide: function(event, ui) {
-                var rotation = ui.value+'deg';
+            step: .001,
+            slide: function (event, ui) {
+                var rotation = ui.value + 'deg';
                 _this.setRotation(rotation);
             }
         });
 
         $("#scale-slider").slider({
             range: "max",
-            min:.1,
+            min: .1,
             max: 5,
             value: 1,
-            step:.1,
-            slide: function(event, ui) {
+            step: .1,
+            slide: function (event, ui) {
                 _this.setScale(ui.value);
             }
         });
 
         $("#toggle-pan").unbind('click');
-        $("#toggle-pan").on('click', function(){
+        $("#toggle-pan").on('click', function () {
 
             $(this).toggleClass('btn-success');
             $(this).toggleClass('btn-danger');
@@ -158,22 +158,22 @@ $(function() {
 
         }
 
-        $('#map-type-select').on('change', function(){
+        $('#map-type-select').on('change', function () {
 
             var val = $(this).val();
-            switch(val){
-                case 'road' : _this.map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
+            switch (val) {
+                case 'road': _this.map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
                     break;
-                case 'hybrid' : _this.map.setMapTypeId(google.maps.MapTypeId.HYBRID);
+                case 'hybrid': _this.map.setMapTypeId(google.maps.MapTypeId.HYBRID);
                     break;
             }
 
         }).val(_this.mapType);
 
-        function updateValues(){
+        function updateValues() {
 
             _this.scaleFactor = $("#scale-value").val().toString();
-            _this.rotation = $("#rotation-value").val().toString()+'deg';
+            _this.rotation = $("#rotation-value").val().toString() + 'deg';
             _this.alpha = $("#alpha-value").val().toString();
 
             _this.setRotation(_this.rotation);
@@ -181,13 +181,13 @@ $(function() {
             _this.setAlpha(_this.alpha);
 
             $("#scale-slider").slider('value', _this.scale);
-            $("#rotation-slider").slider('value',$("#rotation-value").val().toString());
+            $("#rotation-slider").slider('value', $("#rotation-value").val().toString());
             $("#alpha-slider").slider('value', _this.alpha);
 
         }
 
-        $(document).keypress(function(e) {
-            if(e.which == 13) {
+        $(document).keypress(function (e) {
+            if (e.which == 13) {
                 updateValues();
             }
         });

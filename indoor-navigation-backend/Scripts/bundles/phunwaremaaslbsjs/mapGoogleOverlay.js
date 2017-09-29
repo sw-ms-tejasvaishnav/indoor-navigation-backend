@@ -26,27 +26,27 @@ function MapGoogleOverlay(bounds, mapUrl, map, mapManager) {
 
 }
 
-MapGoogleOverlay.prototype.onAdd = function() {
+MapGoogleOverlay.prototype.onAdd = function () {
 
     var _this = this;
 
     // Create bounding box
     this.boundBox = document.createElement('div');
-//    this.boundBox.style.borderColor = 'red';
-//    this.boundBox.style.borderStyle = 'solid';
-//    this.boundBox.style.borderWidth = '1px';
+    //    this.boundBox.style.borderColor = 'red';
+    //    this.boundBox.style.borderStyle = 'solid';
+    //    this.boundBox.style.borderWidth = '1px';
     this.boundBox.style.position = 'relative';
     this.boundBox.style.opacity = '0.7';
 
     // Create bounding box
     this.imageContainer = document.createElement('div');
-//    this.imageContainer.style.borderColor = 'blue';
-//    this.imageContainer.style.borderStyle = 'solid';
-//    this.imageContainer.style.borderWidth = '1px';
+    //    this.imageContainer.style.borderColor = 'blue';
+    //    this.imageContainer.style.borderStyle = 'solid';
+    //    this.imageContainer.style.borderWidth = '1px';
     this.imageContainer.style.position = 'relative';
     this.imageContainer.style.opacity = '0.7';
-    this.imageContainer.style.width = this.mapManager.svgWidth.toString()+'px';
-    this.imageContainer.style.height = this.mapManager.svgHeight.toString()+'px';
+    this.imageContainer.style.width = this.mapManager.svgWidth.toString() + 'px';
+    this.imageContainer.style.height = this.mapManager.svgHeight.toString() + 'px';
 
     // Add TL pt
     var handle1 = document.createElement('div');
@@ -151,9 +151,9 @@ MapGoogleOverlay.prototype.onAdd = function() {
     });
 
     var userZoom = true;
-    google.maps.event.addListener(this.map, 'zoom_changed', function() {
+    google.maps.event.addListener(this.map, 'zoom_changed', function () {
         if (userZoom) {
-            setTimeout(function() {
+            setTimeout(function () {
                 _this.draw()
             }, 450);
         }
@@ -162,11 +162,11 @@ MapGoogleOverlay.prototype.onAdd = function() {
 
     // Init draggable
     $(this.boundBox).draggable({
-        drag: function(event, ui) {
+        drag: function (event, ui) {
             _this.draw(true);
             var xPos = ui.position.left;
             var yPos = ui.position.top;
-            $(_this.boundBox).css("transform", "translate("+xPos+","+yPos+")");
+            $(_this.boundBox).css("transform", "translate(" + xPos + "," + yPos + ")");
         },
         disabled: 'true',
         helper: "original"
@@ -177,7 +177,7 @@ MapGoogleOverlay.prototype.onAdd = function() {
 
 };
 
-MapGoogleOverlay.prototype.toggleDraggableMap = function(){
+MapGoogleOverlay.prototype.toggleDraggableMap = function () {
 
     this.draggable = !this.draggable;
     var enabled = (this.draggable) ? 'enable' : 'disable';
@@ -185,10 +185,10 @@ MapGoogleOverlay.prototype.toggleDraggableMap = function(){
 
 };
 
-MapGoogleOverlay.prototype.draw = function(isUpdate) {
+MapGoogleOverlay.prototype.draw = function (isUpdate) {
 
     isUpdate = typeof isUpdate == 'undefined' ? false : isUpdate;
-    if (!isUpdate){
+    if (!isUpdate) {
 
         // Position the boundbox
         var topRight = this.getProjection().fromLatLngToDivPixel(this.bounds.getNorthEast());
@@ -200,7 +200,7 @@ MapGoogleOverlay.prototype.draw = function(isUpdate) {
         this.boundBox.style.height = (bottomLeft.y - topRight.y) + 'px';
 
         // Get coords of boundbox
-        this.imageContainer.style.width =  this.boundBox.style.width;
+        this.imageContainer.style.width = this.boundBox.style.width;
         this.imageContainer.style.height = this.boundBox.style.height;
 
     }
@@ -253,14 +253,14 @@ MapGoogleOverlay.prototype.draw = function(isUpdate) {
     this.portalTopRight = ptrLatLng;
     this.portalBottomLeft = pblLatLng;
 
-    $('#topLeft').html('TL:'+this.topLeft.toString());
-    $('#topRight').html('TR:'+this.topRight.toString());
-    $('#bottomLeft').html('BL:'+this.bottomLeft.toString());
-    $('#bottomRight').html('BR:'+this.bottomRight.toString());
+    $('#topLeft').html('TL:' + this.topLeft.toString());
+    $('#topRight').html('TR:' + this.topRight.toString());
+    $('#bottomLeft').html('BL:' + this.bottomLeft.toString());
+    $('#bottomRight').html('BR:' + this.bottomRight.toString());
 
 };
 
-MapGoogleOverlay.prototype.onRemove = function() {
+MapGoogleOverlay.prototype.onRemove = function () {
     this.boundBox.parentNode.removeChild(this.boundBox);
     this.boundBox = null;
 };
