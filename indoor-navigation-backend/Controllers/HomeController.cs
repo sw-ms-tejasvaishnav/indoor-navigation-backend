@@ -12,6 +12,9 @@ namespace indoor_navigation_backend.Controllers
         public ActionResult Index()
         {
             //commit001
+
+
+            //testing commit001
             return View();
         }
     }
