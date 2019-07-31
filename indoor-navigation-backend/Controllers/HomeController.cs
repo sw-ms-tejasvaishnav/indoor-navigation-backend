@@ -15,7 +15,12 @@ namespace indoor_navigation_backend.Controllers
 
 
             //testing commit001
+
+            //testing commit002
+
             return View();
+
+
         }
     }
 }
